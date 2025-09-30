@@ -25,8 +25,6 @@
             --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-quick: cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shimmer-gradient: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.03) 50%, transparent 100%);
-            --progress-shimmer: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -35,58 +33,54 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        .rounded-card { border-radius: 16px; background: var(--card); box-shadow: var(--shadow-soft); }
         .themed-button {
-            font-weight: 600; border-radius: 16px; transition: all 0.3s var(--ease-smooth); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: var(--shadow-soft);
+            font-weight: 600; border-radius: 12px; transition: all 0.3s var(--ease-smooth);
             border: none; position: relative; overflow: hidden; transform-origin: center;
         }
-        .themed-button:hover { transform: translateY(-2px) scale(1.02); box-shadow: var(--shadow-medium); }
+        .themed-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-medium); }
         .themed-button:active { transform: scale(0.98); transition-duration: 0.1s; }
-        .themed-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--shimmer-gradient); transition: left 0.6s var(--ease-smooth); z-index: 1; }
-        .themed-button:hover::before { left: 100%; }
+        
         .glass-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
             box-shadow: var(--shadow-soft), 0 0 0 1px var(--glass-border), inset 0 1px 0 rgba(255, 255, 255, 0.3); border: none !important; transition: all 0.3s var(--ease-smooth); position: relative; overflow: hidden;
-        }
-        .glass-card > * { position: relative; z-index: 1; }
-        .glass-card-prominent {
-            background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 100%); backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%);
-            box-shadow: var(--shadow-medium), 0 0 0 1px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 40px rgba(229, 115, 115, 0.1); border: none !important;
         }
         .grid-cell {
             aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.2rem, 5.5vw, 2.75rem);
             transition: all 0.3s var(--ease-smooth); background: #FAF8F5; border: 1px solid rgba(0, 0, 0, 0.02); position: relative; overflow: hidden; min-width: 40px; min-height: 40px;
         }
-        .grid-cell:hover { background: #F0EAE4; transform: translateY(-2px); box-shadow: var(--shadow-soft); }
         .themed-modal { border-radius: 20px; background: var(--card); box-shadow: var(--shadow-strong); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
+        
         .progress-bar-container { position: relative; overflow: hidden; background: rgba(229, 115, 115, 0.15); border-radius: 9999px; }
-        .progress-bar-fill { background: var(--accent-gradient); position: relative; overflow: hidden; transition: width 0.3s var(--ease-smooth); }
-        .progress-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--progress-shimmer); animation: progress-shimmer 2s infinite; }
+        .progress-bar-fill { background: var(--accent-gradient); position: relative; overflow: hidden; transition: width 0.3s var(--ease-smooth); height: 100%; }
+        .progress-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%); animation: progress-shimmer 2s infinite; }
         @keyframes progress-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        .pop-in { animation: pop-in 0.4s var(--ease-bounce); }
-        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5) rotate(-180deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
+
+        @keyframes dice-tumble {
+            0%   { transform: rotate(0deg) scale(1); filter: blur(0px); }
+            25%  { transform: rotate(-90deg) scale(1.05); }
+            50%  { transform: rotate(-180deg) scale(1.1); filter: blur(3px); }
+            75%  { transform: rotate(-270deg) scale(1.05); }
+            100% { transform: rotate(-360deg) scale(1); filter: blur(0px); }
+        }
+        .dice-tumble {
+            animation: dice-tumble 0.6s var(--ease-bounce);
+        }
         .shake-animation { animation: shake 0.4s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px) rotate(-3deg); } 75% { transform: translateX(5px) rotate(3deg); } }
-        .dice-tumble { animation: dice-tumble 0.6s var(--ease-bounce); }
-        @keyframes dice-tumble { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-180deg) scale(1.1); } 100% { transform: rotate(-360deg) scale(1); } }
-        #roll-dice-btn:not(:disabled) { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 115, 115, 0.4); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(229, 115, 115, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 115, 115, 0); } }
-        .pulse-animation { animation: pulse-select 1s infinite; }
-        @keyframes pulse-select { 0% { box-shadow: 0 0 0 0px rgba(229, 115, 115, 0.7); } 100% { box-shadow: 0 0 0 10px rgba(229, 115, 115, 0); } }
-        .stuck-cell { background: var(--stuck-block) !important; color: #FFFFFF; font-size: 2rem; font-weight: 600; }
-        .cursor-target { cursor: crosshair !important; }
+
         .modal { transition: all 0.3s var(--ease-smooth); }
         .modal.is-open { opacity: 1; visibility: visible; }
         .modal-content { transition: all 0.3s var(--ease-smooth); }
         .modal.is-open .modal-content { transform: scale(1) translateY(0); }
-        .score-update { animation: score-update 0.5s var(--ease-quick); }
-        @keyframes score-update { 0% { transform: scale(1); } 50% { transform: scale(1.1); color: #FF8A65; } 100% { transform: scale(1); } }
-        .superpower-btn { background: transparent; border: none; box-shadow: none; color: var(--text-secondary); font-weight: 500; border-radius: 12px; padding: 8px; transition: all 0.3s ease; cursor: pointer; min-width: 70px; }
+        
+        .superpower-btn { background: transparent; border: none; box-shadow: none; color: var(--text-secondary); font-weight: 500; border-radius: 12px; padding: 4px; font-size: 0.7rem; text-align: center; transition: all 0.3s ease; cursor: pointer; min-width: 50px; line-height: 1.2; }
         .superpower-btn:hover:not(:disabled) { transform: translateY(-2px); text-decoration: underline; background: rgba(229, 115, 115, 0.1); }
         .superpower-btn--active { font-weight: 700; transform: translateY(-2px) !important; background: rgba(229, 115, 115, 0.2); }
         .superpower-btn:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
-        #close-rules-btn, #close-game-over-btn, #close-edition-select-btn { color: var(--text-secondary); }
-        #close-rules-btn:hover, #close-game-over-btn:hover, #close-edition-select-btn:hover { color: var(--text); background-color: var(--accent-light); }
+        
+        #close-rules-btn, #close-game-over-btn, #close-edition-select-btn, #confirm-cancel-btn { color: var(--text-secondary); }
+        #close-rules-btn:hover, #close-game-over-btn:hover, #close-edition-select-btn:hover, #confirm-cancel-btn:hover { color: var(--text); background-color: var(--accent-light); }
+        
         .score-display-cell { 
             background: #FAF8F5 !important; 
             color: var(--text-secondary);
@@ -94,7 +88,7 @@
         }
         .highlighted { background-color: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); animation: pulse-highlight 2s infinite; }
         @keyframes pulse-highlight { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 4px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
-        .game-transition { transition: opacity 250ms ease-in-out; }
+        
         .alloha-logo { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .alloha-logo svg { width: 100%; height: 100%; }
         .alloha-logo svg path, .alloha-logo svg g { fill: var(--accent) !important; }
@@ -102,7 +96,7 @@
 </head>
 <body class="p-2 lg:p-4">
     <audio id="audio-unlocker" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" preload="auto"></audio>
-    <main id="game-container" class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6 items-center lg:items-stretch pt-8 lg:pt-16 game-transition">
+    <main id="game-container" class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6 items-center lg:items-stretch pt-8 lg:pt-16">
         <div class="w-full lg:w-2/3 relative">
             <div id="effects-container" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
             <div id="game-board-container" class="p-2 lg:p-6 rounded-card shadow-lg h-full">
@@ -119,15 +113,23 @@
             </div>
         </div>
         <div class="w-full lg:w-1/3">
-            <div id="scoring-panel" class="relative flex-1 flex flex-col gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
+            <div id="scoring-panel" class="relative flex-1 flex flex-col gap-y-4 p-4 lg:p-6 glass-card rounded-2xl">
                 <div class="flex justify-center items-center gap-3">
-                    <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm font-semibold" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
-                    <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white font-semibold rounded-xl text-sm" style="background: var(--accent-gradient);">New Game</button>
+                    <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
+                    <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm" style="background: var(--accent-gradient);">New Game</button>
                 </div>
 
-                <button id="select-edition-btn" class="w-full py-3 themed-button text-center font-bold" style="color: var(--text-secondary); background: rgba(255,255,255,0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">Select Game Edition</button>
+                <div class="text-center">
+                    <button id="select-edition-btn" class="w-full py-2 px-4 themed-button text-sm flex items-center justify-center gap-2" style="color: var(--accent); background: var(--accent-light);">
+                        Select Game Edition
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <p id="current-edition-display" class="text-xs font-semibold mt-2" style="color: var(--text-secondary);"></p>
+                </div>
                 
-                <hr class="border-t border-white/30 -my-2">
+                <div class="relative w-full h-2.5 progress-bar-container mt-2">
+                    <div id="progress-bar-fill" class="progress-bar-fill h-full rounded-full" style="width: 0%;"></div>
+                </div>
                 
                 <div id="pre-game-content" class="flex-grow"></div>
                 <div id="in-game-content" class="flex-grow"></div>
@@ -150,7 +152,10 @@
                         <div><h3 class="text-xs font-semibold uppercase tracking-wider mt-2" style="color: var(--text-secondary);">Grid Bonus</h3><p id="bonus-grid-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
                     </div>
                     <div class="border-t border-white/20 mt-2 pt-2">
-                        <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Bomb Squad Charge</h3><p id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);">0</p>
+                        <div class="flex justify-center items-center gap-4">
+                             <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Bomb Squad Charge</h3>
+                             <p id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);">0</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,10 +169,13 @@
                 <button id="close-rules-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             </div>
             <div class="space-y-4 text-sm max-h-[70vh] overflow-y-auto pr-2" style="color: var(--text-secondary)">
-                 <h3 class="font-bold text-lg" style="color: var(--accent);">The Objective</h3>
-                 <p>Get the highest score by placing Allohas on the grid to create sequences of 3 or more identical Allohas in a line (rows or columns).</p>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Gameplay</h3>
-                 <ol class="list-decimal list-inside space-y-1"><li>Choose your starting Alloha.</li><li>Click "Roll Dice" to get two new Allohas.</li><li>Place both Allohas in any two empty, adjacent (not diagonal) squares.</li></ol>
+                 <ol class="list-decimal list-inside space-y-1">
+                    <li>Choose your starting Alloha.</li>
+                    <li>Click "Roll Dice" to get two new Allohas.</li>
+                    <li>Place both Allohas in any two empty, adjacent (not diagonal) squares.</li>
+                    <li>Click the "Select Game Edition" button on the right panel to choose from different game versions with unique scoring patterns.</li>
+                </ol>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Special Powers</h3>
                  <p>Use two different superpowers per game. Each power can only be used once.</p>
                  <ul class="list-disc list-inside space-y-1"><li><b>Past Lives:</b> Undoes your last completed move.</li><li><b>Bomb Bae:</b> Click to activate, then click a stuck block (💣) to fill it with a random Alloha.</li><li><b>No Return:</b> Click to activate, then click any Alloha on the grid to swap it.</li><li><b>Swap Them:</b> Click to activate, then click any two adjacent Allohas to swap their positions. Must be used before you roll the dice.</li></ul>
@@ -192,6 +200,17 @@
                  <button id="close-edition-select-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             </div>
             <div id="edition-options" class="flex flex-col gap-3"></div>
+        </div>
+    </div>
+    
+    <div id="confirm-restart-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm themed-modal p-8 text-center transform scale-95 -translate-y-4">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--accent);">Restart Game?</h2>
+            <p class="mb-6" style="color: var(--text-secondary);">Your current progress will be lost. Are you sure?</p>
+            <div class="flex justify-center items-center gap-3">
+                <button id="confirm-cancel-btn" class="flex-1 py-2 px-4 themed-button text-sm" style="color: var(--text-secondary); background: rgba(0,0,0,0.05);">Cancel</button>
+                <button id="confirm-restart-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm" style="background: var(--accent-gradient);">Restart</button>
+            </div>
         </div>
     </div>
 
@@ -288,7 +307,7 @@
                 this.SYMBOLS = Object.values(this.DESERT_SYMBOLS);
                 this.SYMBOL_COLORS = { '🛖': 'text-amber-700', '🌵': 'text-green-600', '🪨': 'text-gray-500', '🌞': 'text-yellow-400', '🌴': 'text-lime-700', '🐍': 'text-green-700', '💎': 'text-sky-500' };
                 this.SCORING_RULES = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
-                this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -10; this.MIN_SEQUENCE_LENGTH = 3;
+                this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -5; this.MIN_SEQUENCE_LENGTH = 3;
                 
                 this.gridCells = [];
                 this.audio = { unlocked: false, context: null, sounds: new Map() };
@@ -322,8 +341,18 @@
             }
 
             init(savedState = null) {
+                // Explicitly reset all state variables for a clean slate
+                this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
+                this.currentRoll = [];
+                this.firstPlacementCell = null;
+                this.turnCount = 0;
+                this.stuckBlocks = new Set();
+                this.usedSuperpowers = new Set();
+                this.activeSuperpower = null;
+                this.lastGameState = null;
+                this.currentTotalScore = 0;
                 this.gameStateManager = new GameState();
-                
+
                 if (savedState) {
                     this.gridData = JSON.parse(savedState.gridData);
                     this.currentRoll = savedState.currentRoll;
@@ -338,9 +367,6 @@
                     this.wildcardTurn = savedState.wildcardTurn;
                     this.gameStateManager.currentState = savedState.currentState;
                 } else {
-                    this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
-                    this.currentRoll = []; this.firstPlacementCell = null; this.turnCount = 0; this.stuckBlocks = new Set();
-                    this.usedSuperpowers = new Set(); this.activeSuperpower = null; this.lastGameState = null; this.currentTotalScore = 0;
                     this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
                     this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
                     if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
@@ -405,6 +431,7 @@
                 return totalScore;
             }
             isValidSequence(slice) {
+                if (slice.some(s => s === null)) return false;
                 if (!slice.some(s => s !== null)) return false;
                 const regularSymbols = slice.filter(s => s && s !== this.SPECIAL_SYMBOLS.WILD);
                 return new Set(regularSymbols).size <= 1;
@@ -457,7 +484,13 @@
             }
             addCellEventListeners(cell) { cell.addEventListener('click', this.handleCellClick.bind(this)); cell.addEventListener('mouseenter', () => { if (this.gameStateManager.is('AWAITING_PLACEMENT') || this.activeSuperpower) this.audioPlay('hover'); }); }
             syncPanelHeights() { setTimeout(() => { if (window.innerWidth < 1024) return; const boardHeight = this.DOMElements.game_board_container?.getBoundingClientRect().height; if (boardHeight) this.DOMElements.scoring_panel.style.height = `${boardHeight}px`; }, 50); }
-            updateProgressBar() { if (!this.DOMElements.progress_bar_fill) return; const percentage = (this.turnCount / this.MAX_TURNS) * 100; this.DOMElements.progress_bar_fill.style.width = `${percentage}%`; }
+            
+            updateProgressBar() {
+                if (!this.DOMElements.progress_bar_fill) return;
+                const percentage = (this.turnCount / this.MAX_TURNS) * 100;
+                this.DOMElements.progress_bar_fill.style.width = `${percentage}%`;
+            }
+
             renderGrid() {
                 const fragment = document.createDocumentFragment(); this.DOMElements.game_board.innerHTML = ''; this.gridCells = [];
                 for (let r = 0; r < this.GRID_SIZE; r++) {
@@ -507,7 +540,7 @@
             renderDiceAndPowers() {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4 pt-4';
-                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-2 gap-2 text-xs"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
+                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-4 gap-1 text-center"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
                 wrapper.querySelector('#roll-dice-btn').onclick = this.handleRollDice.bind(this);
                 this.DOMElements.in_game_content.innerHTML = '';
                 this.DOMElements.in_game_content.appendChild(wrapper);
@@ -542,7 +575,10 @@
                 d1.classList.add('dice-tumble'); d2.classList.add('dice-tumble');
                 setTimeout(() => {
                     d1.classList.remove('dice-tumble'); d2.classList.remove('dice-tumble');
-                    this.saveStateForUndo(); this.gameStateManager.setState('AWAITING_PLACEMENT'); this.updateControlsState(); this.updateSuperpowerButtonsUI();
+                    this.gameStateManager.setState('AWAITING_PLACEMENT');
+                    this.saveStateForUndo(); 
+                    this.updateControlsState(); 
+                    this.updateSuperpowerButtonsUI();
                 }, 600);
             }
             handleCellClick(e) {
@@ -560,10 +596,19 @@
                 else { cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); this.audioPlay('invalid'); }
             }
             saveStateForUndo() { this.lastGameState = this.getState(); }
-            completeMove(r, c) { this.gameStateManager.setState('PROCESSING_TURN'); this.gridData[r][c] = this.currentRoll[1]; this.firstPlacementCell = null; this.turnCount++; this.updateGridCell(r, c); this.audioPlay('pop'); setTimeout(this.processTurnEnd.bind(this), 300); }
+            completeMove(r, c) {
+                this.gameStateManager.setState('PROCESSING_TURN');
+                this.gridData[r][c] = this.currentRoll[1];
+                this.firstPlacementCell = null;
+                this.turnCount++;
+                this.updateProgressBar();
+                this.updateGridCell(r, c);
+                this.audioPlay('pop');
+                setTimeout(this.processTurnEnd.bind(this), 300);
+            }
             processTurnEnd() {
                 if (this.gameStateManager.is('GAME_OVER')) return;
-                this.detectStuckBlocks(); this.updateAllScores(); this.updateProgressBar();
+                this.detectStuckBlocks(); this.updateAllScores(); 
                 if (this.turnCount >= this.MAX_TURNS) { this.endGame("Grid is full!"); return; }
                 if (!this.hasValidMoves()) { this.endGame("No valid moves!"); return; }
                 this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
@@ -627,7 +672,9 @@
             updateSuperpowerButtonsUI() {
                 const totalUsed = this.usedSuperpowers.size, isMidMove = this.firstPlacementCell !== null, isPowerActive = this.activeSuperpower !== null, isAwaitingRoll = this.gameStateManager.is('AWAITING_ROLL');
                 const btns = { pastLives: document.getElementById('past-lives-btn'), bombBae: document.getElementById('bomb-bae-btn'), noReturn: document.getElementById('no-return-btn'), swapThem: document.getElementById('swap-them-btn') };
-                if (btns.pastLives) btns.pastLives.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || !this.gameStateManager.is('AWAITING_PLACEMENT');
+                
+                if (btns.pastLives) btns.pastLives.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
+
                 if (btns.bombBae) btns.bombBae.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
                 if (btns.noReturn) btns.noReturn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('noReturn') || isMidMove || isPowerActive;
                 if (btns.swapThem) btns.swapThem.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('swapThem') || !isAwaitingRoll || isMidMove || isPowerActive;
@@ -674,7 +721,25 @@
                 this.updateFullGrid(); this.updateAllScores(); this.updateSuperpowerButtonsUI();
             }
             setupSuperpowerEventListeners() {
-                document.getElementById('past-lives-btn')?.addEventListener('click', () => { if (document.getElementById('past-lives-btn').disabled) return; this.audioPlay('power-activate'); this.init(this.lastGameState); this.consumeSuperpower('pastLives'); });
+                document.getElementById('past-lives-btn')?.addEventListener('click', () => {
+                    if (document.getElementById('past-lives-btn').disabled) return;
+                    this.audioPlay('power-activate');
+
+                    const state = this.lastGameState;
+                    this.gridData = JSON.parse(state.gridData);
+                    this.currentRoll = state.currentRoll;
+                    this.firstPlacementCell = state.firstPlacementCell;
+                    this.turnCount = state.turnCount;
+                    this.stuckBlocks = new Set(state.stuckBlocks);
+                    this.gameStateManager.currentState = state.currentState;
+
+                    this.updateFullGrid();
+                    this.updateControlsState();
+                    this.updateAllScores();
+                    this.updateProgressBar();
+                    
+                    this.consumeSuperpower('pastLives');
+                });
                 const powerBtns = { bombBae: 'bomb-bae-btn', noReturn: 'no-return-btn', swapThem: 'swap-them-btn' };
                 for (const [power, id] of Object.entries(powerBtns)) { document.getElementById(id)?.addEventListener('click', () => { if (document.getElementById(id).disabled) return; this.activeSuperpower = power; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); }); }
             }
@@ -691,6 +756,7 @@
             gameStates: {},
             activeVariantId: null,
             currentGameInstance: null,
+            pendingAction: null,
 
             init() {
                 this.populateEditionModal();
@@ -703,11 +769,20 @@
                 container.innerHTML = '';
                 Object.values(variantConfigs).forEach(config => {
                     const button = document.createElement('button');
-                    button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold';
+                    button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold transition-colors';
                     button.textContent = config.name;
                     button.onclick = () => {
-                        this.switchVariant(config.id);
+                        const game = this.currentGameInstance;
+                        const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
+                        
                         document.getElementById('edition-select-modal').classList.remove('is-open');
+
+                        if (isGameInProgress) {
+                            this.pendingAction = () => this.switchVariant(config.id, true);
+                            document.getElementById('confirm-restart-modal').classList.add('is-open');
+                        } else {
+                            this.switchVariant(config.id);
+                        }
                     };
                     container.appendChild(button);
                 });
@@ -732,6 +807,8 @@
 
                     this.currentGameInstance = new Game(config, savedState);
                     
+                    document.getElementById('current-edition-display').textContent = 'Now Playing: ' + config.name;
+                    
                     gameContainer.style.opacity = '1';
                 }, 250);
             },
@@ -742,7 +819,11 @@
             
             setupGlobalEventListeners() {
                 const editionModal = document.getElementById('edition-select-modal');
-                document.getElementById('select-edition-btn').addEventListener('click', () => editionModal.classList.add('is-open'));
+                const confirmModal = document.getElementById('confirm-restart-modal');
+                
+                document.getElementById('select-edition-btn').addEventListener('click', () => {
+                    editionModal.classList.add('is-open');
+                });
                 document.getElementById('close-edition-select-btn').addEventListener('click', () => editionModal.classList.remove('is-open'));
 
                 document.getElementById('rules-btn').addEventListener('click', () => this.currentGameInstance.DOMElements.rules_modal.classList.add('is-open'));
@@ -752,12 +833,24 @@
                     const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
                     
                     if (isGameInProgress) {
-                        if (window.confirm("Are you sure you want to restart the game? Your current progress will be lost.")) {
-                            this.resetCurrentVariant();
-                        }
+                        this.pendingAction = () => this.resetCurrentVariant();
+                        confirmModal.classList.add('is-open');
                     } else {
                         this.resetCurrentVariant();
                     }
+                });
+
+                document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+                    this.pendingAction = null;
+                    confirmModal.classList.remove('is-open');
+                });
+                
+                document.getElementById('confirm-restart-btn').addEventListener('click', () => {
+                    if (typeof this.pendingAction === 'function') {
+                        this.pendingAction();
+                    }
+                    this.pendingAction = null;
+                    confirmModal.classList.remove('is-open');
                 });
 
                 document.addEventListener('keydown', (e) => {
@@ -771,7 +864,7 @@
                             this.currentGameInstance.updateSuperpowerButtonsUI();
                             this.currentGameInstance.gameStateManager.setState(this.currentGameInstance.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
                         } else {
-                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal'].forEach(id => document.getElementById(id).classList.remove('is-open'));
+                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal'].forEach(id => document.getElementById(id).classList.remove('is-open'));
                         }
                     }
                     if ((e.key === ' ' || e.key === 'Enter') && this.currentGameInstance?.gameStateManager.is('AWAITING_ROLL')) {
