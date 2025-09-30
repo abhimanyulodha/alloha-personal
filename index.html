@@ -85,17 +85,16 @@
         .superpower-btn:hover:not(:disabled) { transform: translateY(-2px); text-decoration: underline; background: rgba(229, 115, 115, 0.1); }
         .superpower-btn--active { font-weight: 700; transform: translateY(-2px) !important; background: rgba(229, 115, 115, 0.2); }
         .superpower-btn:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
-        #close-rules-btn, #close-game-over-btn { color: var(--text-secondary); }
-        #close-rules-btn:hover, #close-game-over-btn:hover { color: var(--text); background-color: var(--accent-light); }
+        #close-rules-btn, #close-game-over-btn, #close-edition-select-btn { color: var(--text-secondary); }
+        #close-rules-btn:hover, #close-game-over-btn:hover, #close-edition-select-btn:hover { color: var(--text); background-color: var(--accent-light); }
         .score-display-cell { 
             background: #FAF8F5 !important; 
             color: var(--text-secondary);
-            font-size: clamp(1rem, 4vw, 1.5rem); /* Responsive font size */
+            font-size: clamp(1rem, 4vw, 1.5rem);
         }
         .highlighted { background-color: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); animation: pulse-highlight 2s infinite; }
         @keyframes pulse-highlight { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 4px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
         .game-transition { transition: opacity 250ms ease-in-out; }
-        #variant-selector { appearance: none; -webkit-appearance: none; background-color: transparent; border: none; text-align: center; padding: 0.4rem 2rem 0.4rem 1rem; font-size: 0.875rem; color: var(--text); font-weight: 600; cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em;}
         .alloha-logo { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .alloha-logo svg { width: 100%; height: 100%; }
         .alloha-logo svg path, .alloha-logo svg g { fill: var(--accent) !important; }
@@ -121,20 +120,18 @@
         </div>
         <div class="w-full lg:w-1/3">
             <div id="scoring-panel" class="relative flex-1 flex flex-col gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
+                <div class="flex justify-center items-center gap-3">
+                    <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm font-semibold" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
+                    <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white font-semibold rounded-xl text-sm" style="background: var(--accent-gradient);">New Game</button>
+                </div>
+
+                <button id="select-edition-btn" class="w-full py-3 themed-button text-center font-bold" style="color: var(--text-secondary); background: rgba(255,255,255,0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">Select Game Edition</button>
                 
-                <div class="flex items-center justify-between gap-2 p-1.5 rounded-full" style="background: rgba(255,255,255,0.4); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
-                    <button id="rules-btn" class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md transition-transform hover:scale-105 active:scale-95">
-                        <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.01183 11.056C6.01183 11.056 6.04383 11.0405 6.05983 11.0327C6.69183 10.6835 7.22083 10.0645 7.53583 9.307C7.85083 8.5495 7.92883 7.7065 7.76183 6.8965C7.59483 6.0865 7.19583 5.3565 6.61483 4.8265C6.03383 4.2965 5.30983 3.9995 4.56183 3.9995C3.25983 3.9995 2.06883 4.8025 1.53483 5.9545C1.37083 6.289 1.52283 6.6935 1.85733 6.8575L1.90883 6.883C2.24333 7.047 2.64783 6.8945 2.81183 6.56C3.16183 5.7945 3.82683 5.3565 4.56183 5.3565C4.93083 5.3565 5.28483 5.4755 5.56083 5.6885C5.83683 5.9015 6.01183 6.1985 6.06583 6.535C6.11983 6.8715 6.05383 7.2205 5.87883 7.5175C5.70383 7.8145 5.43283 8.0405 5.10883 8.1595C4.36083 8.4235 3.82683 9.1055 3.82683 9.883V10.6605C3.82683 11.056 4.15183 11.3805 4.54783 11.3805C4.94383 11.3805 5.26883 11.056 5.26883 10.6605V10.243C5.26883 10.117 5.32383 9.9985 5.41983 9.9115C5.51583 9.8245 5.63483 9.7765 5.75883 9.7765C5.88283 9.7765 6.00183 9.8245 6.09783 9.9115C6.19383 9.9985 6.24883 10.117 6.24883 10.243L6.01183 11.056ZM4.94133 14.4075C4.94133 13.9155 5.33933 13.5175 5.83133 13.5175C6.32333 13.5175 6.72133 13.9155 6.72133 14.4075C6.72133 14.8995 6.32333 15.2975 5.83133 15.2975C5.33933 15.2975 4.94133 14.8995 4.94133 14.4075Z" fill="black" stroke="black" stroke-width="0.5"/></svg>
-                    </button>
-                    <select id="variant-selector" class="flex-grow"></select>
-                    <button id="new-game-btn" class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-transform hover:scale-105 active:scale-95" style="background: var(--accent-gradient);">
-                        <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-1"><path d="M11.5593 6.00288C12.2393 6.38688 12.2393 7.33388 11.5593 7.71788L1.67925 13.6399C0.999254 14.0239 0.149254 13.5509 0.149254 12.7769L0.149255 1.00288C0.149255 0.228881 0.999255 -0.244119 1.67925 0.139881L11.5593 6.00288Z" fill="white"/></svg>
-                    </button>
-                </div>
-                <div class="relative w-full h-2.5 progress-bar-container">
-                    <div id="progress-bar-fill" class="h-full rounded-full progress-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div id="controls-area" class="flex items-center justify-center"></div>
+                <hr class="border-t border-white/30 -my-2">
+                
+                <div id="pre-game-content" class="flex-grow"></div>
+                <div id="in-game-content" class="flex-grow"></div>
+
                 <div class="grid grid-cols-2 gap-3 text-center">
                     <div class="glass-card rounded-xl px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Score</h3>
@@ -185,6 +182,16 @@
                  <li><b>Grid Bonus:</b> 2x2, 3x3, etc. grids of the same Alloha give bonus points (size * size).</li>
                  <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning pattern gets a -5 penalty.</li></ul>
             </div>
+        </div>
+    </div>
+    
+    <div id="edition-select-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm themed-modal p-6 transform scale-95 -translate-y-4">
+            <div class="flex justify-between items-center mb-4">
+                 <h2 class="text-2xl font-bold" style="color: var(--accent);">Select Edition</h2>
+                 <button id="close-edition-select-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
+            </div>
+            <div id="edition-options" class="flex flex-col gap-3"></div>
         </div>
     </div>
 
@@ -294,7 +301,7 @@
             getDOMElements() {
                 const elements = {};
                 const idMap = {
-                    game_board: 'game-board', controls_area: 'controls-area', row_scores_display: 'row-scores-display',
+                    game_board: 'game-board', row_scores_display: 'row-scores-display',
                     col_scores_display: 'col-scores-display', total_score: 'total-score', high_score: 'high-score',
                     rows_total_score: 'rows-total-score', cols_total_score: 'cols-total-score', cross_total_score: 'cross-total-score',
                     bonus_grid_score: 'bonus-grid-score', empty_block_penalty: 'empty-block-penalty', rules_btn: 'rules-btn',
@@ -305,7 +312,8 @@
                     final_bonus_score: 'final-bonus-score', final_penalty_score: 'final-penalty-score',
                     exchange_modal: 'exchange-modal', exchange_options: 'exchange-options', progress_bar_fill: 'progress-bar-fill',
                     new_game_btn: 'new-game-btn', game_board_container: 'game-board-container', scoring_panel: 'scoring-panel',
-                    effects_container: 'effects-container', rules_title: 'rules-title'
+                    effects_container: 'effects-container', rules_title: 'rules-title', 
+                    in_game_content: 'in-game-content', pre_game_content: 'pre-game-content'
                 };
                 for (const key in idMap) {
                     elements[key] = document.getElementById(idMap[key]);
@@ -473,29 +481,39 @@
                 }
             }
             renderControls() {
-                this.DOMElements.controls_area.innerHTML = '';
-                if (this.gameStateManager.is('PRE_GAME')) { this.renderPreGameControls(); }
-                else { this.renderGameControls(); this.setupSuperpowerEventListeners(); this.updateSuperpowerButtonsUI(); }
-                this.syncPanelHeights();
+                if (this.gameStateManager.is('PRE_GAME')) {
+                    this.DOMElements.pre_game_content.style.display = 'block';
+                    this.DOMElements.in_game_content.style.display = 'none';
+                    this.renderSymbolSelector();
+                } else {
+                    this.DOMElements.pre_game_content.style.display = 'none';
+                    this.DOMElements.in_game_content.style.display = 'block';
+                    this.renderDiceAndPowers();
+                }
             }
-            renderPreGameControls() {
-                const container = document.createElement('div'); container.className = 'w-full flex flex-col items-center';
+            renderSymbolSelector() {
+                const container = document.createElement('div'); container.className = 'w-full flex flex-col items-center pt-4';
                 container.innerHTML = `<h2 class="text-base lg:text-lg font-semibold text-center mb-4 uppercase tracking-wider" style="color: var(--accent);">CHOOSE YOUR ALLOHA</h2>`;
                 const selector = document.createElement('div'); selector.className = 'grid grid-cols-3 gap-2 lg:gap-4';
                 this.SYMBOLS.forEach(symbol => {
                     const btn = document.createElement('button');
-                    btn.className = `w-16 h-16 rounded-xl text-4xl hover:bg-orange-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
+                    btn.className = `w-16 h-16 rounded-xl text-4xl hover:bg-orange-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center transition-transform hover:scale-110 active:scale-95`;
                     btn.textContent = symbol; btn.onclick = () => this.handleSymbolSelect(symbol); btn.onmouseenter = () => this.audioPlay('hover'); selector.appendChild(btn);
                 });
-                container.appendChild(selector); this.DOMElements.controls_area.appendChild(container);
+                container.appendChild(selector);
+                this.DOMElements.pre_game_content.innerHTML = '';
+                this.DOMElements.pre_game_content.appendChild(container);
             }
-            renderGameControls() {
+            renderDiceAndPowers() {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4';
+                wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4 pt-4';
                 wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-2 gap-2 text-xs"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
                 wrapper.querySelector('#roll-dice-btn').onclick = this.handleRollDice.bind(this);
-                this.DOMElements.controls_area.appendChild(wrapper);
+                this.DOMElements.in_game_content.innerHTML = '';
+                this.DOMElements.in_game_content.appendChild(wrapper);
                 this.updateControlsState();
+                this.setupSuperpowerEventListeners(); 
+                this.updateSuperpowerButtonsUI();
             }
             updateControlsState() {
                 if (this.gameStateManager.is('PRE_GAME')) return;
@@ -661,7 +679,6 @@
                 for (const [power, id] of Object.entries(powerBtns)) { document.getElementById(id)?.addEventListener('click', () => { if (document.getElementById(id).disabled) return; this.activeSuperpower = power; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); }); }
             }
             setupEventListeners() {
-                this.DOMElements.rules_btn.addEventListener('click', () => this.DOMElements.rules_modal.classList.add('is-open'));
                 this.DOMElements.close_rules_btn.addEventListener('click', () => this.DOMElements.rules_modal.classList.remove('is-open'));
                 this.DOMElements.close_game_over_btn.addEventListener('click', () => this.DOMElements.game_over_modal.classList.remove('is-open'));
                 this.DOMElements.play_again_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); gameManager.resetCurrentVariant(); });
@@ -676,18 +693,23 @@
             currentGameInstance: null,
 
             init() {
-                this.populateSelector();
+                this.populateEditionModal();
                 this.setupGlobalEventListeners();
                 this.switchVariant('core'); // Default variant
             },
 
-            populateSelector() {
-                const selector = document.getElementById('variant-selector');
+            populateEditionModal() {
+                const container = document.getElementById('edition-options');
+                container.innerHTML = '';
                 Object.values(variantConfigs).forEach(config => {
-                    const option = document.createElement('option');
-                    option.value = config.id;
-                    option.textContent = config.name;
-                    selector.appendChild(option);
+                    const button = document.createElement('button');
+                    button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold';
+                    button.textContent = config.name;
+                    button.onclick = () => {
+                        this.switchVariant(config.id);
+                        document.getElementById('edition-select-modal').classList.remove('is-open');
+                    };
+                    container.appendChild(button);
                 });
             },
 
@@ -695,7 +717,6 @@
                 const gameContainer = document.getElementById('game-container');
                 gameContainer.style.opacity = '0';
 
-                // Save current game state before switching if it exists
                 if (this.currentGameInstance && !isNewGame) {
                     this.gameStates[this.activeVariantId] = this.currentGameInstance.getState();
                 }
@@ -711,8 +732,6 @@
 
                     this.currentGameInstance = new Game(config, savedState);
                     
-                    document.getElementById('variant-selector').value = variantId;
-                    
                     gameContainer.style.opacity = '1';
                 }, 250);
             },
@@ -722,7 +741,12 @@
             },
             
             setupGlobalEventListeners() {
-                document.getElementById('variant-selector').addEventListener('change', (e) => this.switchVariant(e.target.value));
+                const editionModal = document.getElementById('edition-select-modal');
+                document.getElementById('select-edition-btn').addEventListener('click', () => editionModal.classList.add('is-open'));
+                document.getElementById('close-edition-select-btn').addEventListener('click', () => editionModal.classList.remove('is-open'));
+
+                document.getElementById('rules-btn').addEventListener('click', () => this.currentGameInstance.DOMElements.rules_modal.classList.add('is-open'));
+
                 document.getElementById('new-game-btn').addEventListener('click', () => {
                     const game = this.currentGameInstance;
                     const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
@@ -747,7 +771,7 @@
                             this.currentGameInstance.updateSuperpowerButtonsUI();
                             this.currentGameInstance.gameStateManager.setState(this.currentGameInstance.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
                         } else {
-                           ['rules-modal', 'game-over-modal', 'exchange-modal'].forEach(id => document.getElementById(id).classList.remove('is-open'));
+                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal'].forEach(id => document.getElementById(id).classList.remove('is-open'));
                         }
                     }
                     if ((e.key === ' ' || e.key === 'Enter') && this.currentGameInstance?.gameStateManager.is('AWAITING_ROLL')) {
