@@ -529,7 +529,7 @@
                 }
             }
             renderSymbolSelector() {
-                const container = document.createElement('div'); container.className = 'w-full flex flex-col items-center pt-4';
+                const container = document.createElement('div'); container.className = 'w-full flex flex-col items-center pt-2';
                 container.innerHTML = `<h2 class="text-base lg:text-lg font-semibold text-center mb-4 uppercase tracking-wider" style="color: var(--accent);">CHOOSE YOUR ALLOHA</h2>`;
                 const selector = document.createElement('div'); selector.className = 'grid grid-cols-3 gap-2 lg:gap-4';
                 this.SYMBOLS.forEach(symbol => {
@@ -543,7 +543,7 @@
             }
             renderDiceAndPowers() {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4 pt-4';
+                wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4 pt-2';
                 wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-4 gap-1 text-center"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
                 wrapper.querySelector('#roll-dice-btn').onclick = this.handleRollDice.bind(this);
                 this.DOMElements.in_game_content.innerHTML = '';
