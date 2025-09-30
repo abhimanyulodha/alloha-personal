@@ -55,7 +55,7 @@
         }
         .grid-cell {
             aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.2rem, 5.5vw, 2.75rem);
-            transition: all 0.3s var(--ease-smooth); background: #FAF8F5; border: 1px solid rgba(0, 0, 0, 0.02); position: relative; overflow: hidden; min-width: 48px; min-height: 48px;
+            transition: all 0.3s var(--ease-smooth); background: #FAF8F5; border: 1px solid rgba(0, 0, 0, 0.02); position: relative; overflow: hidden; min-width: 40px; min-height: 40px;
         }
         .grid-cell:hover { background: #F0EAE4; transform: translateY(-2px); box-shadow: var(--shadow-soft); }
         .themed-modal { border-radius: 20px; background: var(--card); box-shadow: var(--shadow-strong); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
@@ -87,11 +87,17 @@
         .superpower-btn:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
         #close-rules-btn, #close-game-over-btn { color: var(--text-secondary); }
         #close-rules-btn:hover, #close-game-over-btn:hover { color: var(--text); background-color: var(--accent-light); }
-        .score-display-cell { background: #FAF8F5 !important; color: var(--text-secondary); }
+        .score-display-cell { 
+            background: #FAF8F5 !important; 
+            color: var(--text-secondary);
+            font-size: clamp(1rem, 4vw, 1.5rem); /* Responsive font size */
+        }
         .highlighted { background-color: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); animation: pulse-highlight 2s infinite; }
         @keyframes pulse-highlight { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 4px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
         .game-transition { transition: opacity 250ms ease-in-out; }
-        #variant-selector { background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); padding: 0.4rem 0.5rem; font-size: 0.875rem; color: var(--text); font-weight: 600; cursor: pointer; }
+        #variant-selector { appearance: none; -webkit-appearance: none; background-color: transparent; border: none; padding: 0.4rem 2rem 0.4rem 1rem; font-size: 0.875rem; color: var(--text); font-weight: 600; cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em;}
+        .alloha-logo { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .alloha-logo svg { width: 100%; height: 100%; }
         .alloha-logo svg path, .alloha-logo svg g { fill: var(--accent) !important; }
         @media (max-width: 768px) {
             .grid-cell { min-width: 40px; min-height: 40px; font-size: clamp(1rem, 5vw, 2rem); }
@@ -109,20 +115,26 @@
                     <div id="game-board" class="col-span-7 grid grid-cols-7 gap-1 lg:gap-2"></div>
                     <div id="row-scores-display" class="col-span-1 grid grid-rows-7 gap-1 lg:gap-2"></div>
                     <div id="col-scores-display" class="col-span-7 grid grid-cols-7 mt-1 lg:mt-0 gap-1 lg:gap-2"></div>
-                    <div class="hidden lg:flex items-center justify-center">
-                        <div class="alloha-logo w-[60px] h-[60px] flex items-center justify-center">
-                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396.75 396.75" preserveAspectRatio="xMidYMid meet"><g clip-path="url(#_clip_864cd2432c)"><g transform="translate(40 0)"><g clip-path="url(#_clip_e5df82bf12)"><g transform="translate(1 0)"><g clip-path="url(#_clip_9e91a8b430)"><g fill="#20B2AA"><g transform="translate(.874 194.871)"><path d="M137.91 0v-174.547H6.805V0h43.699v-48.676h43.703V0zM94.207-88.449H50.504v-46.059h43.703z"/></g></g></g></g><g clip-path="url(#_clip_9a4060e8fa)"><g transform="translate(146 116)"><g clip-path="url(#_clip_f5a1301079)"><g fill="#20B2AA"><g transform="translate(1.207 267.95)"><path d="M137.91 0v-174.547H6.805V0zM94.207-39.777H50.504v-94.731h43.703z"/></g></g></g></g></g><g transform="translate(148 0)"><g clip-path="url(#_clip_45fb35c46f)"><g fill="#20B2AA"><g transform="translate(.266 194.871)"><path d="M137.387 0v-39.777H50.504v-134.77h-43.7V0z"/></g></g></g></g><g clip-path="url(#_clip_cd05768fb1)"><g transform="translate(0 116)"><g clip-path="url(#_clip_f5e8ebd13e)"><g fill="#20B2AA"><g transform="translate(1.876 267.95)"><path d="M137.91 0v-174.547H94.207v-67.516H50.504v67.516H6.805V0h43.699v-68.562h43.703V0z"/></g></g></g></g></g><g clip-path="url(#_clip_22bb000506)"><g transform="translate(242 20)"><g clip-path="url(#_clip_7703948ec8)"><g clip-path="url(#_clip_cb13c63ddb)"><path fill="#20B2AA" d="M43.164 120.25H.375V.414h42.789z"/></g></g></g></g><g clip-path="url(#_clip_0f7bc66451)"><g transform="translate(213 20)"><g clip-path="url(#_clip_75d75e67e1)"><g clip-path="url(#_clip_90aa4af11e)"><path fill="#20B2AA" d="M.84 43.223V.438h62.843v42.785z"/></g></g></g></g></g></g></g></g></svg>
+                    <div class="hidden lg:flex items-center justify-center p-1">
+                        <div class="alloha-logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" viewBox="0 0 396.75 396.749985" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><g/><clipPath id="864cd2432c"><path d="M 40 0 L 355 0 L 355 396.5 L 40 396.5 Z M 40 0 " clip-rule="nonzero"/></clipPath><clipPath id="9e91a8b430"><rect x="0" width="169" y="0" height="269"/></clipPath><clipPath id="9a4060e8fa"><path d="M 146 116 L 314.976562 116 L 314.976562 396.5 L 146 396.5 Z M 146 116 " clip-rule="nonzero"/></clipPath><clipPath id="f5a1301079"><rect x="0" width="169" y="0" height="281"/></clipPath><clipPath id="45fb35c46f"><rect x="0" width="166" y="0" height="269"/></clipPath><clipPath id="cd05768fb1"><path d="M 0.292969 116 L 171 116 L 171 396.5 L 0.292969 396.5 Z M 0.292969 116 " clip-rule="nonzero"/></clipPath><clipPath id="f5e8ebd13e"><rect x="0" width="171" y="0" height="281"/></clipPath><clipPath id="22bb000506"><path d="M 242.375 20.429688 L 285.164062 20.429688 L 285.164062 140.25 L 242.375 140.25 Z M 242.375 20.429688 " clip-rule="nonzero"/></clipPath><clipPath id="cb13c63ddb"><path d="M 0.375 0.429688 L 43.164062 0.429688 L 43.164062 120.25 L 0.375 120.25 Z M 0.375 0.429688 " clip-rule="nonzero"/></clipPath><clipPath id="7703948ec8"><rect x="0" width="44" y="0" height="121"/></clipPath><clipPath id="0f7bc66451"><path d="M 213.839844 20.4375 L 276.609375 20.4375 L 276.609375 63.222656 L 213.839844 63.222656 Z M 213.839844 20.4375 " clip-rule="nonzero"/></clipPath><clipPath id="90aa4af11e"><path d="M 0.839844 0.4375 L 63.609375 0.4375 L 63.609375 43.222656 L 0.839844 43.222656 Z M 0.839844 0.4375 " clip-rule="nonzero"/></clipPath><clipPath id="75d75e67e1"><rect x="0" width="64" y="0" height="44"/></clipPath><clipPath id="e5df82bf12"><rect x="0" width="315" y="0" height="397"/></clipPath></defs><g clip-path="url(#864cd2432c)"><g transform="matrix(1, 0, 0, 1, 40, 0)"><g clip-path="url(#e5df82bf12)"><g transform="matrix(1, 0, 0, 1, 1, 0)"><g clip-path="url(#9e91a8b430)"><g fill="#000000" fill-opacity="1"><g transform="translate(0.873977, 194.870819)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -48.675781 L 94.207031 -48.675781 L 94.207031 0 Z M 94.207031 -88.449219 L 50.503906 -88.449219 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -88.449219 "/></g></g></g></g></g><g clip-path="url(#9a4060e8fa)"><g transform="matrix(1, 0, 0, 1, 146, 116)"><g clip-path="url(#f5a1301079)"><g fill="#000000" fill-opacity="1"><g transform="translate(1.206642, 267.950498)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 94.207031 -39.777344 L 50.503906 -39.777344 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -39.777344 "/></g></g></g></g></g></g><g transform="matrix(1, 0, 0, 1, 148, 0)"><g clip-path="url(#45fb35c46f)"><g fill="#000000" fill-opacity="1"><g transform="translate(0.26582, 194.870819)"><g><path d="M 137.386719 0 L 137.386719 -39.777344 L 50.503906 -39.777344 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 137.386719 0 "/></g></g></g></g></g><g clip-path="url(#cd05768fb1)"><g transform="matrix(1, 0, 0, 1, -0.000000000000007105, 116)"><g clip-path="url(#f5e8ebd13e)"><g fill="#000000" fill-opacity="1"><g transform="translate(1.876102, 267.950498)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 94.207031 -174.546875 L 94.207031 -107.03125 L 50.503906 -107.03125 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -68.5625 L 94.207031 -68.5625 L 94.207031 0 Z M 137.910156 0 "/></g></g></g></g></g></g><g clip-path="url(#22bb000506)"><g transform="matrix(1, 0, 0, 1, 242, 20)"><g clip-path="url(#7703948ec8)"><g clip-path="url(#cb13c63ddb)"><path fill="#000000" d="M 43.164062 120.25 L 0.375 120.25 L 0.375 0.414062 L 43.164062 0.414062 Z M 43.164062 120.25 " fill-opacity="1" fill-rule="nonzero"/></g></g></g></g><g clip-path="url(#0f7bc66451)"><g transform="matrix(1, 0, 0, 1, 213, 20)"><g clip-path="url(#75d75e67e1)"><g clip-path="url(#90aa4af11e)"><path fill="#000000" d="M 0.839844 43.222656 L 0.839844 0.4375 L 63.683594 0.4375 L 63.683594 43.222656 Z M 0.839844 43.222656 " fill-opacity="1" fill-rule="nonzero"/></g></g></g></g></g></g></g></svg>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="w-full lg:w-1/3">
-            <div id="scoring-panel" class="flex-1 flex flex-col gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
-                <div class="flex justify-between items-center gap-2">
-                    <button id="rules-btn" class="themed-button text-xl font-bold flex-shrink-0 w-12 h-12" style="color: var(--accent); background: var(--accent-light);">?</button>
-                    <select id="variant-selector" class="flex-grow text-center"></select>
-                    <button id="new-game-btn" class="flex-1 py-3 px-4 themed-button text-white font-semibold rounded-xl text-sm" style="background: var(--accent-gradient);">New Game</button>
+            <div id="scoring-panel" class="relative flex-1 flex flex-col gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
+                <div class="flex items-center justify-between gap-2 p-1.5 rounded-full bg-white/30 shadow-inner">
+                    <button id="rules-btn" class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md transition-transform hover:scale-105">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <path d="M12.0118 14.881C12.0118 14.881 12.0438 14.8655 12.0598 14.8577C12.6918 14.5085 13.2208 13.8895 13.5358 13.132C13.8508 12.3745 13.9288 11.5315 13.7618 10.7215C13.5948 9.9115 13.1958 9.1815 12.6148 8.6515C12.0338 8.1215 11.3098 7.8245 10.5618 7.8245C9.25984 7.8245 8.06884 8.6275 7.53484 9.7795C7.37084 10.114 7.52284 10.5185 7.85734 10.6825L7.90884 10.708C8.24334 10.872 8.64784 10.7195 8.81184 10.385C9.16184 9.6275 9.82684 9.1815 10.5618 9.1815C10.9308 9.1815 11.2848 9.3005 11.5608 9.5135C11.8368 9.7265 12.0118 10.0235 12.0658 10.36C12.1198 10.6965 12.0538 11.0455 11.8788 11.3425C11.7038 11.6395 11.4328 11.8655 11.1088 11.9845C10.3608 12.2485 9.82684 12.9305 9.82684 13.708V14.4855C9.82684 14.881 10.1518 15.2055 10.5478 15.2055C10.9438 15.2055 11.2688 14.881 11.2688 14.4855V14.068C11.2688 13.942 11.3238 13.8235 11.4198 13.7365C11.5158 13.6495 11.6348 13.6015 11.7588 13.6015C11.8828 13.6015 12.0018 13.6495 12.0978 13.7365C12.1938 13.8235 12.2488 13.942 12.2488 14.068L12.0118 14.881Z" fill="black"></path><path d="M10.9413 18.2325C10.9413 17.7405 11.3393 17.3425 11.8313 17.3425C12.3233 17.3425 12.7213 17.7405 12.7213 18.2325C12.7213 18.7245 12.3233 19.1225 11.8313 19.1225C11.3393 19.1225 10.9413 18.7245 10.9413 18.2325Z" fill="black"></path>
+                        </svg>
+                    </button>
+                    <select id="variant-selector" class="flex-grow bg-transparent border-none text-center font-semibold focus:ring-0 cursor-pointer"></select>
+                    <button id="new-game-btn" class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-transform hover:scale-105" style="background: var(--accent-gradient);">
+                        <span class="text-white text-xl" style="transform: translateX(2px);">▶</span>
+                    </button>
                 </div>
                 <div class="relative w-full h-2.5 progress-bar-container">
                     <div id="progress-bar-fill" class="h-full rounded-full progress-bar-fill" style="width: 0%;"></div>
@@ -461,8 +473,8 @@
                 this.DOMElements.row_scores_display.innerHTML = ''; 
                 this.DOMElements.col_scores_display.innerHTML = '';
                 for (let i = 0; i < this.GRID_SIZE; i++) {
-                    const rowScore = document.createElement('div'); rowScore.id = `row-score-${i}`; rowScore.className = 'grid-cell score-display-cell text-lg lg:text-2xl'; rowScore.textContent = '0'; this.DOMElements.row_scores_display.appendChild(rowScore);
-                    const colScore = document.createElement('div'); colScore.id = `col-score-${i}`; colScore.className = 'grid-cell score-display-cell text-lg lg:text-2xl'; colScore.textContent = '0'; this.DOMElements.col_scores_display.appendChild(colScore);
+                    const rowScore = document.createElement('div'); rowScore.id = `row-score-${i}`; rowScore.className = 'grid-cell score-display-cell'; rowScore.textContent = '0'; this.DOMElements.row_scores_display.appendChild(rowScore);
+                    const colScore = document.createElement('div'); colScore.id = `col-score-${i}`; colScore.className = 'grid-cell score-display-cell'; colScore.textContent = '0'; this.DOMElements.col_scores_display.appendChild(colScore);
                 }
             }
             renderControls() {
