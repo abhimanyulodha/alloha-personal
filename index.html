@@ -17,6 +17,9 @@
             --accent: #E57373;
             --accent-light: rgba(229, 115, 115, 0.1);
             --accent-gradient: linear-gradient(135deg, #E57373 0%, #FF8A65 100%);
+            --accent-gradient-shaded: linear-gradient(135deg, #EE9A9A 0%, #FFCCBC 100%);
+            --highlighted-bg: rgba(229, 115, 115, 0.15);
+            --highlighted-border: rgba(229, 115, 115, 0.3);
             --stuck-block: linear-gradient(135deg, #757575 0%, #616161 100%);
             --glass-border: rgba(255, 255, 255, 0.2);
             --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.06);
@@ -41,7 +44,8 @@
         .themed-button:active { transform: scale(0.98); transition-duration: 0.1s; }
         
         .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: var(--card);
+            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
             box-shadow: var(--shadow-soft), 0 0 0 1px var(--glass-border), inset 0 1px 0 rgba(255, 255, 255, 0.3); border: none !important; transition: all 0.3s var(--ease-smooth); position: relative; overflow: hidden;
         }
         .grid-cell {
@@ -77,8 +81,8 @@
         .modal.is-open .modal-content { transform: scale(1) translateY(0); }
         
         .superpower-btn { background: transparent; border: none; box-shadow: none; color: var(--text-secondary); font-weight: 500; border-radius: 12px; padding: 4px; font-size: 0.7rem; text-align: center; transition: all 0.3s ease; cursor: pointer; min-width: 50px; line-height: 1.2; }
-        .superpower-btn:hover:not(:disabled) { transform: translateY(-2px); text-decoration: underline; background: rgba(229, 115, 115, 0.1); }
-        .superpower-btn--active { font-weight: 700; transform: translateY(-2px) !important; background: rgba(229, 115, 115, 0.2); }
+        .superpower-btn:hover:not(:disabled) { transform: translateY(-2px); text-decoration: underline; background: var(--accent-light); }
+        .superpower-btn--active { font-weight: 700; transform: translateY(-2px) !important; background: var(--accent-light); }
         .superpower-btn:disabled { opacity: 0.5; cursor: not-allowed; text-decoration: none; }
         
         #close-rules-btn, #close-game-over-btn, #close-edition-select-btn, #confirm-cancel-btn { color: var(--text-secondary); }
@@ -89,12 +93,65 @@
             color: var(--text-secondary);
             font-size: clamp(1rem, 4vw, 1.5rem);
         }
-        .highlighted { background-color: rgba(76, 175, 80, 0.15); border: 1px solid rgba(76, 175, 80, 0.3); box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); animation: pulse-highlight 2s infinite; }
+        .highlighted { 
+            background-color: var(--highlighted-bg); 
+            border: 1px solid var(--highlighted-border);
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.2); 
+            animation: pulse-highlight 2s infinite; 
+        }
         @keyframes pulse-highlight { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 4px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
         
         .alloha-logo { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .alloha-logo svg { width: 100%; height: 100%; }
         .alloha-logo svg path, .alloha-logo svg g { fill: var(--accent) !important; }
+
+        #mode-toggle-switch { transition: background-color 0.2s ease-in-out; }
+        #mode-toggle-switch.time-burst-active { background-color: var(--accent); }
+        #mode-toggle-switch.time-burst-active #mode-toggle-thumb { transform: translateX(1.5rem); }
+
+        #edition-options::-webkit-scrollbar { width: 8px; }
+        #edition-options::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
+        #edition-options::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        #edition-options::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+
+        .edition-selected { background-color: var(--accent-light) !important; font-weight: 700; color: var(--accent); }
+
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,138,101,0) 0%, rgba(229,115,115,0.8) 40%, rgba(229,115,115,0) 70%);
+            transform: translate(-50%, -50%);
+            animation: shockwave-animation 0.7s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes shockwave-animation {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(10); opacity: 0; }
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 16px;
+            background: var(--accent);
+            top: -20px;
+            opacity: 0;
+            animation-timing-function: linear;
+        }
+        @keyframes confetti-fall {
+            0% { top: -20px; opacity: 1; transform: rotate(0deg); }
+            100% { top: 100%; opacity: 1; transform: rotate(720deg); }
+        }
+        .focused-cell {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+            box-shadow: 0 0 12px var(--accent);
+        }
     </style>
 </head>
 <body class="p-2 lg:p-4">
@@ -131,7 +188,7 @@
                 </div>
 
                 <div class="text-center">
-                    <button id="select-edition-btn" class="w-full py-2 px-4 themed-button text-sm flex items-center justify-center gap-2" style="color: var(--accent); background: var(--accent-light);">
+                    <button id="select-edition-btn" class="w-full py-2 px-4 themed-button text-white text-sm flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
                         Select Game Edition
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
@@ -189,7 +246,7 @@
                     <li><b>Cursed Block (☠️):</b> An immovable obstacle! This block cannot be removed by Bomb Bae or swapped with No Return. Appears once per game.</li>
                  </ul>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Scoring</h3>
-                 <ul class="list-disc list-inside space-y-1"><li><b>3 in a line:</b> 3 points</li><li><b>4 in a line:</b> 8 points</li><li><b>5 in a line:</b> 10 points</li><li><b>6 in a line:</b> 14 points</li><li><b>7 in a line:</b> 20 points</li>
+                 <ul class="list-disc list-inside space-y-1"><li><b>3 in a line:</b> 3 points</li><li><b>4 in a line:</b> 5 points</li><li><b>5 in a line:</b> 8 points</li><li><b>6 in a line:</b> 12 points</li><li><b>7 in a line:</b> 20 points</li>
                  <li><b>Twinning Pattern Bonus:</b> Scores on the special highlighted pattern are doubled!</li>
                  <li><b>Grid Bonus:</b> 2x2, 3x3, etc. grids of the same Alloha give bonus points (size * size).</li>
                  <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning pattern gets a -5 penalty.</li></ul>
@@ -203,7 +260,14 @@
                  <h2 class="text-2xl font-bold" style="color: var(--accent);">Select Edition</h2>
                  <button id="close-edition-select-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             </div>
-            <div id="edition-options" class="flex flex-col gap-3"></div>
+            <div class="flex items-center justify-center mb-4 space-x-4">
+                <span id="classic-text" class="font-semibold text-gray-600">Classic</span>
+                <div id="mode-toggle-switch" class="w-14 h-8 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer">
+                    <div id="mode-toggle-thumb" class="bg-white w-6 h-6 rounded-full shadow-md transform transition-transform"></div>
+                </div>
+                <span id="time-burst-text" class="font-semibold text-gray-600">Time Burst</span>
+            </div>
+            <div id="edition-options" class="flex flex-col gap-3 max-h-64 overflow-y-auto"></div>
         </div>
     </div>
     
@@ -246,55 +310,287 @@
     </div>
 
     <script>
+        const themeConfigs = {
+            pastel_pals: {
+                name: "Pastel Pals",
+                symbols: ['🐰', '🐶', '🐯', '🐼', '🦄', '🐸'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)',
+                    card: 'rgba(255, 255, 255, 0.88)',
+                    text: '#4A148C',
+                    text_secondary: '#7B1FA2',
+                    accent: '#8E24AA',
+                    highlighted_bg: 'rgba(142, 36, 170, 0.15)',
+                    highlighted_border: 'rgba(142, 36, 170, 0.3)',
+                },
+                symbolColors: { '🐰':'text-pink-400', '🐶':'text-amber-600', '🐯':'text-orange-500', '🐼':'text-gray-700', '🦄':'text-purple-500', '🐸':'text-green-500' }
+            },
+            green_grocer: {
+                name: "Green Grocer",
+                symbols: ['🥑', '🥦', '🧄', '🌽', '🫑', '🌶️'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%)',
+                    card: 'rgba(255, 255, 255, 0.9)',
+                    text: '#33691E',
+                    text_secondary: '#689F38',
+                    accent: '#8BC34A',
+                    highlighted_bg: 'rgba(139, 195, 74, 0.15)',
+                    highlighted_border: 'rgba(139, 195, 74, 0.3)',
+                },
+                symbolColors: { '🥑':'text-green-800', '🥦':'text-green-600', '🧄':'text-gray-500', '🌽':'text-yellow-500', '🫑':'text-green-700', '🌶️':'text-red-600' }
+            },
+            bug_life: {
+                name: "Bug's Life",
+                symbols: ['🦋', '🐝', '🪲', '🐛', '🐞', '🪰'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%)',
+                    card: 'rgba(255, 255, 255, 0.85)',
+                    text: '#004D40',
+                    text_secondary: '#00796B',
+                    accent: '#009688',
+                    highlighted_bg: 'rgba(0, 150, 136, 0.15)',
+                    highlighted_border: 'rgba(0, 150, 136, 0.3)',
+                },
+                symbolColors: { '🦋':'text-blue-500', '🐝':'text-yellow-500', '🪲':'text-amber-800', '🐛':'text-lime-600', '🐞':'text-red-600', '🪰':'text-gray-700' }
+            },
+            golden_bakery: {
+                name: "Golden Bakery",
+                symbols: ['🍞', '🥯', '🥐', '🧇', '🍪', '🥞'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%)',
+                    card: 'rgba(255, 255, 255, 0.9)',
+                    text: '#8D6E63',
+                    text_secondary: '#A1887F',
+                    accent: '#AF8260',
+                    highlighted_bg: 'rgba(175, 130, 96, 0.15)',
+                    highlighted_border: 'rgba(175, 130, 96, 0.3)',
+                },
+                symbolColors: { '🍞':'text-amber-800', '🥯':'text-amber-700', '🥐':'text-orange-600', '🧇':'text-yellow-700', '🍪':'text-amber-900', '🥞':'text-amber-600' }
+            },
+            deep_ocean: {
+                name: "Deep Ocean",
+                symbols: ['🐡', '🦑', '🦀', '🐙', '🐳', '🐠'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #1A237E 0%, #0D47A1 100%)',
+                    card: 'rgba(26, 35, 126, 0.7)',
+                    text: '#E3F2FD',
+                    text_secondary: '#90CAF9',
+                    accent: '#42A5F5',
+                    highlighted_bg: 'rgba(66, 165, 245, 0.2)',
+                    highlighted_border: 'rgba(66, 165, 245, 0.4)',
+                },
+                symbolColors: { '🐡':'text-yellow-300', '🦑':'text-pink-300', '🦀':'text-red-400', '🐙':'text-purple-300', '🐳':'text-blue-300', '🐠':'text-orange-300' }
+            },
+            concrete_justice: {
+                name: "Concrete Justice",
+                symbols: ['⛓️', '🚔', '👮', '🏛️', '🔒', '🚪'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #455A64 0%, #263238 100%)',
+                    card: 'rgba(55, 71, 79, 0.8)',
+                    text: '#ECEFF1',
+                    text_secondary: '#B0BEC5',
+                    accent: '#1976D2',
+                    highlighted_bg: 'rgba(25, 118, 210, 0.15)',
+                    highlighted_border: 'rgba(25, 118, 210, 0.3)',
+                },
+                symbolColors: { '⛓️':'text-gray-400', '🚔':'text-blue-400', '👮':'text-yellow-400', '🏛️':'text-gray-300', '🔒':'text-amber-400', '🚪':'text-orange-400' }
+            },
+            the_post_office: {
+                name: "The Post Office",
+                symbols: ['📦', '📮', '🗂️', '🗳️', '🗄️', '📬'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #EFEBE9 0%, #D7CCC8 100%)',
+                    card: 'rgba(255, 255, 255, 0.9)',
+                    text: '#3E2723',
+                    text_secondary: '#6D4C41',
+                    accent: '#D32F2F',
+                    highlighted_bg: 'rgba(211, 47, 47, 0.1)',
+                    highlighted_border: 'rgba(211, 47, 47, 0.25)',
+                },
+                symbolColors: { '📦':'text-amber-800', '📮':'text-red-600', '🗂️':'text-gray-500', '🗳️':'text-blue-700', '🗄️':'text-gray-600', '📬':'text-red-700' }
+            },
+            tutti_frutti: {
+                name: "Tutti Frutti",
+                symbols: ['🍓', '🫐', '🍉', '🥝', '🥭', '🍋'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%)',
+                    card: 'rgba(255, 255, 255, 0.9)',
+                    text: '#4E342E',
+                    text_secondary: '#8D6E63',
+                    accent: '#EC407A',
+                    highlighted_bg: 'rgba(236, 64, 122, 0.1)',
+                    highlighted_border: 'rgba(236, 64, 122, 0.25)',
+                },
+                symbolColors: { '🍓':'text-red-500', '🫐':'text-blue-600', '🍉':'text-green-600', '🥝':'text-lime-700', '🥭':'text-orange-500', '🍋':'text-yellow-500' }
+            },
+            desert_oasis: {
+                name: "Desert Oasis",
+                symbols: ['🌵', '🪨', '☀️', '🐍', '⛺', '🌴'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #FFECB3 0%, #FFD54F 100%)',
+                    card: 'rgba(255, 255, 255, 0.85)',
+                    text: '#5D4037',
+                    text_secondary: '#8D6E63',
+                    accent: '#00897B',
+                    highlighted_bg: 'rgba(0, 137, 123, 0.15)',
+                    highlighted_border: 'rgba(0, 137, 123, 0.3)',
+                },
+                symbolColors: { '🌵':'text-green-700', '🪨':'text-gray-600', '☀️':'text-yellow-600', '🐍':'text-emerald-800', '⛺':'text-orange-700', '🌴':'text-lime-800' }
+            },
+            morning_aviary: {
+                name: "Morning Aviary",
+                symbols: ['🐔', '🐦', '🐥', '🐣', '🐝', '🐧'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)',
+                    card: 'rgba(255, 255, 255, 0.9)',
+                    text: '#0D47A1',
+                    text_secondary: '#1976D2',
+                    accent: '#FFA000',
+                    highlighted_bg: 'rgba(255, 160, 0, 0.15)',
+                    highlighted_border: 'rgba(255, 160, 0, 0.3)',
+                },
+                symbolColors: { '🐔':'text-red-600', '🐦':'text-blue-500', '🐥':'text-yellow-500', '🐣':'text-yellow-400', '🐝':'text-yellow-600', '🐧':'text-gray-800' }
+            },
+            creepy_crawlies: {
+                name: "Creepy Crawlies",
+                symbols: ['🐍', '🦎', '🦂', '🐭', '🥚', '🕷️'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #37474F 0%, #212121 100%)',
+                    card: 'rgba(38, 50, 56, 0.8)',
+                    text: '#CFD8DC',
+                    text_secondary: '#90A4AE',
+                    accent: '#7E57C2',
+                    highlighted_bg: 'rgba(126, 87, 194, 0.15)',
+                    highlighted_border: 'rgba(126, 87, 194, 0.3)',
+                },
+                symbolColors: { '🐍':'text-green-400', '🦎':'text-lime-400', '🦂':'text-red-400', '🐭':'text-gray-400', '🥚':'text-gray-200', '🕷️':'text-gray-300' }
+            },
+            ancient_secrets: {
+                name: "Ancient Secrets",
+                symbols: ['🔍', '🧩', '🀄', '🔑', '🧭', '👁️'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #5D4037 0%, #3E2723 100%)',
+                    card: 'rgba(62, 39, 35, 0.75)',
+                    text: '#D7CCC8',
+                    text_secondary: '#A1887F',
+                    accent: '#FFCA28',
+                    highlighted_bg: 'rgba(255, 202, 40, 0.15)',
+                    highlighted_border: 'rgba(255, 202, 40, 0.3)',
+                },
+                symbolColors: { '🔍':'text-blue-300', '🧩':'text-orange-300', '🀄':'text-red-400', '🔑':'text-yellow-300', '🧭':'text-gray-300', '👁️':'text-cyan-300' }
+            },
+            cosmic_drift: {
+                name: "Cosmic Drift",
+                symbols: ['🌍', '🚀', '🪐', '🌗', '💫', '🛰️'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #1A237E 0%, #0D123B 100%)',
+                    card: 'rgba(48, 59, 128, 0.7)',
+                    text: '#E8EAF6',
+                    text_secondary: '#9FA8DA',
+                    accent: '#536DFE',
+                    highlighted_bg: 'rgba(83, 109, 254, 0.2)',
+                    highlighted_border: 'rgba(83, 109, 254, 0.4)',
+                },
+                symbolColors: { '🌍':'text-blue-300', '🚀':'text-gray-300', '🪐':'text-amber-300', '🌗':'text-gray-200', '💫':'text-yellow-300', '🛰️':'text-blue-200' }
+            },
+            petal_meadow: {
+                name: "Petal Meadow",
+                symbols: ['🌸', '🌺', '🌷', '🪷', '🪻', '🌻'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #E6EE9C 0%, #C5E1A5 100%)',
+                    card: 'rgba(255, 255, 255, 0.9)',
+                    text: '#2E7D32',
+                    text_secondary: '#558B2F',
+                    accent: '#D81B60',
+                    highlighted_bg: 'rgba(216, 27, 96, 0.1)',
+                    highlighted_border: 'rgba(216, 27, 96, 0.25)',
+                },
+                symbolColors: { '🌸':'text-pink-400', '🌺':'text-red-500', '🌷':'text-orange-500', '🪷':'text-pink-500', '🪻':'text-purple-500', '🌻':'text-yellow-500' }
+            },
+            monster_mash: {
+                name: "Monster Mash",
+                symbols: ['👹', '🐲', '👻', '👽', '🐺', '😈'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #4A148C 0%, #1A001A 100%)',
+                    card: 'rgba(40, 10, 70, 0.8)',
+                    text: '#E1BEE7',
+                    text_secondary: '#CE93D8',
+                    accent: '#76FF03',
+                    highlighted_bg: 'rgba(118, 255, 3, 0.15)',
+                    highlighted_border: 'rgba(118, 255, 3, 0.3)',
+                },
+                symbolColors: { '👹':'text-red-400', '🐲':'text-green-400', '👻':'text-gray-300', '👽':'text-lime-300', '🐺':'text-gray-400', '😈':'text-purple-400' }
+            }
+        };
+
+        function applyTheme(themeId) {
+            const theme = themeConfigs[themeId];
+            if (!theme) {
+                console.warn(`Theme "${themeId}" not found.`);
+                return;
+            }
+            const root = document.documentElement;
+            const palette = theme.palette;
+            for (const key in palette) {
+                root.style.setProperty(`--${key.replace(/_/g, '-')}`, palette[key]);
+            }
+        }
+
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        const generateCrossScoreSegments = (isTwinningCell) => {
+            const segments = [];
+            const GRID_SIZE = 7;
+
+            const processLine = (lineType, index) => {
+                let currentSegment = null;
+                for (let i = 0; i < GRID_SIZE; i++) {
+                    const isTwinning = (lineType === 'row') ? isTwinningCell(index, i) : isTwinningCell(i, index);
+                    if (isTwinning) {
+                        if (currentSegment === null) {
+                            currentSegment = { type: lineType, index: index, start: i, end: i };
+                        } else {
+                            currentSegment.end = i;
+                        }
+                    } else {
+                        if (currentSegment !== null) {
+                            segments.push(currentSegment);
+                            currentSegment = null;
+                        }
+                    }
+                }
+                if (currentSegment !== null) {
+                    segments.push(currentSegment);
+                }
+            };
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                processLine('row', r);
+            }
+            for (let c = 0; c < GRID_SIZE; c++) {
+                processLine('col', c);
+            }
+            
+            return segments;
+        };
+        
         // --- VARIANT CONFIGURATIONS ---
         const variantConfigs = {
-            'core': {
-                id: 'core',
-                name: 'Cacti Facti Edition',
-                title: 'Alloha - Cacti Facti Edition',
-                highScoreKey: 'cactiFactiHighScore_core',
-                isTwinningCell: (r, c) => {
-                    return (r === 3 && c >= 3 && c <= 5) || // 4th Row - Column 4 to 6
-                           (r === 5 && c >= 1 && c <= 3) || // 6th Row - Column 2 to 4
-                           (c === 1 && r >= 1 && r <= 5) || // 2nd Column - Row 2 to 6
-                           (c === 3) ||                     // 4th Column - Entire column
-                           (c === 5 && r >= 0 && r <= 3);   // 6th Column - Row 1 to 4
-                },
-                getCrossScoreSegments: () => [
-                    { type: 'row', index: 3, start: 3, end: 5 }, { type: 'row', index: 5, start: 1, end: 3 },
-                    { type: 'col', index: 1, start: 1, end: 5 }, { type: 'col', index: 3, start: 0, end: 6 },
-                    { type: 'col', index: 5, start: 0, end: 3 }
-                ]
-            },
-            'box_vox': {
-                id: 'box_vox',
-                name: 'Box Vox Edition',
-                title: 'Alloha - Cacti Facti - Box Vox Edition',
-                highScoreKey: 'cactiFactiHighScore_box_vox',
-                isTwinningCell: (r, c) => {
-                    const highlighted = [0, 3, 6]; // Corresponds to rows/cols 1, 4, 7
-                    return highlighted.includes(r) || highlighted.includes(c);
-                },
-                getCrossScoreSegments: () => [
-                    { type: 'row', index: 0, start: 0, end: 6 }, { type: 'row', index: 3, start: 0, end: 6 },
-                    { type: 'row', index: 6, start: 0, end: 6 }, { type: 'col', index: 0, start: 0, end: 6 },
-                    { type: 'col', index: 3, start: 0, end: 6 }, { type: 'col', index: 6, start: 0, end: 6 }
-                ]
-            },
-            'w': {
-                id: 'w',
-                name: 'W Edition',
-                title: 'Alloha - Cacti Facti - W Edition',
-                highScoreKey: 'cactiFactiHighScore_w',
-                isTwinningCell: (r, c) => {
-                    const highlightedCols = [0, 3, 6];
-                    return r === 6 || highlightedCols.includes(c);
-                },
-                getCrossScoreSegments: () => [
-                    { type: 'row', index: 6, start: 0, end: 6 }, { type: 'col', index: 0, start: 0, end: 6 },
-                    { type: 'col', index: 3, start: 0, end: 6 }, { type: 'col', index: 6, start: 0, end: 6 }
-                ]
-            }
+            'plain_jean': { id: 'plain_jean', name: 'Plain Jean', themeId: 'pastel_pals', timeLimit: 100, isTwinningCell: (r, c) => false, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'one_won': { id: 'one_won', name: 'One Won', themeId: 'green_grocer', timeLimit: 100, isTwinningCell: (r, c) => c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'plus_minus': { id: 'plus_minus', name: 'Plus Minus', themeId: 'bug_life', timeLimit: 100, isTwinningCell: (r, c) => r === 3 || c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'sugar_cube': { id: 'sugar_cube', name: 'Sugar Cube', themeId: 'golden_bakery', timeLimit: 100, isTwinningCell: (r, c) => r === 0 || r === 6 || c === 0 || c === 6, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'wonder_wander': { id: 'wonder_wander', name: 'Wonder Wander', themeId: 'deep_ocean', timeLimit: 120, isTwinningCell: (r, c) => r === 6 || [0, 3, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'jail_mail': { id: 'jail_mail', name: 'Jail Mail', themeId: 'concrete_justice', timeLimit: 120, isTwinningCell: (r, c) => [0, 2, 4, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'box_vox': { id: 'box_vox', name: 'Box Vox', themeId: 'the_post_office', timeLimit: 120, isTwinningCell: (r, c) => [0, 3, 6].includes(r) || [0, 3, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'hash_hush': { id: 'hash_hush', name: 'Hash Hush', themeId: 'tutti_frutti', timeLimit: 120, isTwinningCell: (r, c) => [2, 4].includes(r) || [2, 4].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'core': { id: 'core', name: 'Cacti Facti Edition', themeId: 'desert_oasis', timeLimit: 150, isTwinningCell: (r, c) => (r === 3 && c >= 3 && c <= 5) || (r === 5 && c >= 1 && c <= 3) || (c === 1 && r >= 1 && r <= 5) || (c === 3) || (c === 5 && r >= 0 && r <= 3), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'eight_and_watch': { id: 'eight_and_watch', name: 'Eight and Watch', themeId: 'morning_aviary', timeLimit: 150, isTwinningCell: (r, c) => (r === 0 && c >= 3) || (r === 3) || (r === 6 && c <= 3) || (c === 0 && r >= 3) || (c === 3) || (c === 6 && r <= 3), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'fake_snake': { id: 'fake_snake', name: 'Fake Snake', themeId: 'creepy_crawlies', timeLimit: 150, isTwinningCell: (r, c) => (r === 0 && c >= 4) || (r === 2 && c >= 2 && c <= 4) || (r === 4 && c <= 2) || (c === 0 && r >= 4) || (c === 2 && r >= 2 && r <= 4) || (c === 4 && r <= 2), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'rune_dune': { id: 'rune_dune', name: 'Rune Dune', themeId: 'ancient_secrets', timeLimit: 150, isTwinningCell: (r, c) => (r === 2 && c >= 1 && c <= 5) || (r === 4 && c >= 1 && c <= 5) || (c === 1 && (r <= 2 || r >= 4)) || (c === 3) || (c === 5 && (r <= 2 || r >= 4)), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'space_race': { id: 'space_race', name: 'Space Race', themeId: 'cosmic_drift', timeLimit: 180, isTwinningCell: (r, c) => (r === 2 && c >= 2 && c <= 4) || (r === 3 && (c <= 2 || c >= 4)) || (r === 4 && c >= 2 && c <= 4) || (c === 2 && r >= 2 && r <= 4) || (c === 3 && (r <= 2 || r >= 4)) || (c === 4 && r >= 2 && r <= 4), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'flower_power': { id: 'flower_power', name: 'Flower Power', themeId: 'petal_meadow', timeLimit: 180, isTwinningCell: (r, c) => (r === 0 && c >= 2 && c <= 4) || (r === 2 && c >= 2 && c <= 4) || r === 4 || (c === 1 && r >= 3 && r <= 5) || (c === 2 && r <= 2) || (c === 3 && r >= 2) || (c === 4 && r <= 2) || (c === 5 && r >= 3 && r <= 5), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'monster': { id: 'monster', name: 'Monster Monster', themeId: 'monster_mash', timeLimit: 180, isTwinningCell: (r, c) => (r === 0 && c <= 2) || (r === 2 && c <= 4) || (r === 3 && c >= 4) || (r === 4 && c >= 2 && c <= 4) || (r === 6 && c <= 3) || (c === 0 && r <= 2) || (c === 2 && r <= 4) || (c === 3 && r >= 4) || (c === 4 && r >= 2 && r <= 4), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } }
         };
 
         class GameState {
@@ -304,16 +600,22 @@
         }
 
         class Game {
-            constructor(config, savedState = null) {
-                this.config = config;
-                this.DESERT_SYMBOLS = { 'Hut': '🛖', 'Cactus': '🌵', 'Rock': '🪨', 'Sun': '🌞', 'PalmTree': '🌴', 'Snake': '🐍' };
+            constructor(variantConfig, themeConfig, isTimeBurst, savedState = null) {
+                this.config = variantConfig;
+                this.theme = themeConfig;
+                this.isTimeBurst = isTimeBurst;
+                this.timerId = null;
+                this.timeLeft = this.config.timeLimit;
+                
+                this.SYMBOLS = this.theme.symbols;
+                this.SYMBOL_COLORS = this.theme.symbolColors;
                 this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
-                this.SYMBOLS = Object.values(this.DESERT_SYMBOLS);
-                this.SYMBOL_COLORS = { '🛖': 'text-amber-700', '🌵': 'text-green-600', '🪨': 'text-gray-500', '🌞': 'text-yellow-400', '🌴': 'text-lime-700', '🐍': 'text-green-700', '💎': 'text-sky-500' };
-                this.SCORING_RULES = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
+
+                this.SCORING_RULES = { 7: 20, 6: 12, 5: 8, 4: 5, 3: 3 };
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -5; this.MIN_SEQUENCE_LENGTH = 3;
                 
                 this.gridCells = [];
+                this.focusedCell = null;
                 this.audio = { unlocked: false, context: null, sounds: new Map() };
                 this.DOMElements = this.getDOMElements();
                 
@@ -345,7 +647,7 @@
             }
 
             init(savedState = null) {
-                // Explicitly reset all state variables for a clean slate
+                this.stopTimer();
                 this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
                 this.currentRoll = [];
                 this.firstPlacementCell = null;
@@ -356,6 +658,7 @@
                 this.lastGameState = null;
                 this.currentTotalScore = 0;
                 this.gameStateManager = new GameState();
+                this.focusedCell = { r: 0, c: 0 };
 
                 if (savedState) {
                     this.gridData = JSON.parse(savedState.gridData);
@@ -370,7 +673,11 @@
                     this.cursedBlockTurn = savedState.cursedBlockTurn;
                     this.wildcardTurn = savedState.wildcardTurn;
                     this.gameStateManager.currentState = savedState.currentState;
+                    this.timeLeft = savedState.timeLeft;
+                    if(this.isTimeBurst && this.turnCount > 0 && !this.gameStateManager.is('GAME_OVER')) this.startTimer();
+
                 } else {
+                    this.timeLeft = this.config.timeLimit;
                     this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
                     this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
                     if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
@@ -378,7 +685,8 @@
 
                 this.cellToExchange = null; this.swapFirstCell = null;
                 
-                this.highScore = parseInt(localStorage.getItem(this.config.highScoreKey)) || 0;
+                const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
+                this.highScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
                 this.DOMElements.high_score.textContent = this.highScore;
                 this.DOMElements.rules_title.textContent = this.config.title;
 
@@ -406,7 +714,9 @@
                     currentTotalScore: this.currentTotalScore,
                     cursedBlockTurn: this.cursedBlockTurn,
                     wildcardTurn: this.wildcardTurn,
-                    currentState: this.gameStateManager.currentState
+                    currentState: this.gameStateManager.currentState,
+                    timeLeft: this.timeLeft,
+                    isTimeBurst: this.isTimeBurst
                 };
             }
 
@@ -416,6 +726,36 @@
             audioPlayTone(freq, vol, dur) { if (!this.audio.unlocked || !this.audio.context) return; try { const o = this.audio.context.createOscillator(), g = this.audio.context.createGain(); o.connect(g); g.connect(this.audio.context.destination); o.frequency.value = freq; g.gain.setValueAtTime(0, this.audio.context.currentTime); g.gain.linearRampToValueAtTime(vol*.1, this.audio.context.currentTime+.01); g.gain.exponentialRampToValueAtTime(.001, this.audio.context.currentTime+dur); o.start(); o.stop(this.audio.context.currentTime+dur); } catch (e) {} }
             audioUnlock() { if (this.audio.unlocked) return; document.getElementById('audio-unlocker').play().finally(() => { this.audio.unlocked = true; }); }
             audioPlay(soundName) { this.audio.sounds.get(soundName)?.(); }
+
+            startTimer() {
+                if (this.timerId || this.gameStateManager.is('GAME_OVER')) return;
+                this.updateTimerDisplay();
+                this.timerId = setInterval(() => {
+                    if (this.gameStateManager.is('GAME_OVER')) {
+                        this.stopTimer();
+                        return;
+                    }
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    if (this.timeLeft <= 0) {
+                        this.endGame("Time's up!");
+                    }
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (this.timerId) {
+                    clearInterval(this.timerId);
+                    this.timerId = null;
+                }
+            }
+
+            updateTimerDisplay() {
+                const timerEl = document.getElementById('timer-display');
+                if (timerEl) {
+                    timerEl.textContent = this.timeLeft;
+                }
+            }
 
             calculateLineScore(line) {
                 let totalScore = 0; const usedIndices = new Set();
@@ -506,9 +846,35 @@
                     this.gridCells.push(row);
                 }
                 this.DOMElements.game_board.appendChild(fragment);
+                this.updateFocusVisuals();
             }
             updateFullGrid() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) this.updateGridCell(r, c); }
             updateGridCell(r, c) { if (this.gridCells[r]?.[c]) this.updateCell(this.gridCells[r][c], r, c); }
+            
+            updateFocusVisuals() {
+                this.gridCells.flat().forEach(cell => cell.classList.remove('focused-cell'));
+                if (this.focusedCell) {
+                    const { r, c } = this.focusedCell;
+                    this.gridCells[r][c].classList.add('focused-cell');
+                }
+            }
+            
+            moveFocus(dr, dc) {
+                if (!this.focusedCell) this.focusedCell = { r: 0, c: 0 };
+                let { r, c } = this.focusedCell;
+                r = Math.max(0, Math.min(this.GRID_SIZE - 1, r + dr));
+                c = Math.max(0, Math.min(this.GRID_SIZE - 1, c + dc));
+                this.focusedCell = { r, c };
+                this.updateFocusVisuals();
+            }
+            
+            placeWithKeyboard() {
+                if (!this.focusedCell) return;
+                const { r, c } = this.focusedCell;
+                const cellElement = this.gridCells[r][c];
+                this.handleCellClick({ target: cellElement });
+            }
+
             renderScorePlaceholders() {
                 this.DOMElements.row_scores_display.innerHTML = ''; 
                 this.DOMElements.col_scores_display.innerHTML = '';
@@ -544,13 +910,25 @@
             renderDiceAndPowers() {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4 pt-2';
-                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-4 gap-1 text-center"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
+                let timerHTML = '';
+                if(this.isTimeBurst) {
+                    timerHTML = `<div id="timer-display" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-2xl lg:text-3xl font-bold" style="color: var(--accent);">${this.timeLeft}</div>`;
+                }
+
+                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4">
+                    <button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button>
+                    <div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div>
+                    <div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl">?</div>
+                    ${timerHTML}
+                </div>
+                <div class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-4 gap-1 text-center"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
                 wrapper.querySelector('#roll-dice-btn').onclick = this.handleRollDice.bind(this);
                 this.DOMElements.in_game_content.innerHTML = '';
                 this.DOMElements.in_game_content.appendChild(wrapper);
                 this.updateControlsState();
                 this.setupSuperpowerEventListeners(); 
                 this.updateSuperpowerButtonsUI();
+                if(this.isTimeBurst) this.updateTimerDisplay();
             }
             updateControlsState() {
                 if (this.gameStateManager.is('PRE_GAME')) return;
@@ -566,9 +944,13 @@
                     dice2.textContent = '?'; dice2.className = 'w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card flex items-center justify-center text-3xl lg:text-4xl';
                 }
             }
-            handleSymbolSelect(symbol) { if (!this.gameStateManager.is('PRE_GAME')) return; this.audioUnlock(); this.audioPlay('pop'); this.gridData[0][0] = symbol; this.gameStateManager.setState('AWAITING_ROLL'); this.updateGridCell(0, 0); this.renderControls(); }
-            handleRollDice() {
+            handleSymbolSelect(symbol) { 
+                if (!this.gameStateManager.is('PRE_GAME')) return; 
+                this.audioUnlock(); this.audioPlay('pop'); this.gridData[0][0] = symbol; this.gameStateManager.setState('AWAITING_ROLL'); this.updateGridCell(0, 0); this.renderControls(); 
+            }
+            async handleRollDice() {
                 if (!this.gameStateManager.is('AWAITING_ROLL') || this.gameStateManager.is('GAME_OVER')) return;
+                if (this.isTimeBurst && !this.timerId) { this.startTimer(); }
                 const nextTurn = this.turnCount + 1; let tempRoll;
                 if (nextTurn === this.cursedBlockTurn) { this.audioPlay('thud'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.CURSED]; }
                 else if (nextTurn === this.wildcardTurn) { this.audioPlay('chime'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.WILD]; }
@@ -577,17 +959,22 @@
                 this.gameStateManager.setState('ANIMATING_ROLL'); this.updateControlsState();
                 const d1 = document.getElementById('dice-1'), d2 = document.getElementById('dice-2');
                 d1.classList.add('dice-tumble'); d2.classList.add('dice-tumble');
-                setTimeout(() => {
-                    d1.classList.remove('dice-tumble'); d2.classList.remove('dice-tumble');
-                    this.gameStateManager.setState('AWAITING_PLACEMENT');
-                    this.saveStateForUndo(); 
-                    this.updateControlsState(); 
-                    this.updateSuperpowerButtonsUI();
-                }, 600);
+                
+                await delay(600);
+                
+                d1.classList.remove('dice-tumble'); d2.classList.remove('dice-tumble');
+                this.gameStateManager.setState('AWAITING_PLACEMENT');
+                this.saveStateForUndo(); 
+                this.updateControlsState(); 
+                this.updateSuperpowerButtonsUI();
             }
             handleCellClick(e) {
                 const cell = e.target.closest('[data-row]'); if (!cell) return;
                 const r = parseInt(cell.dataset.row), c = parseInt(cell.dataset.col);
+                
+                this.focusedCell = { r, c };
+                this.updateFocusVisuals();
+
                 if (this.activeSuperpower) { this.handleSuperpowerCellClick(r, c, cell); return; }
                 if (!this.gameStateManager.is('AWAITING_PLACEMENT')) return;
                 if (this.firstPlacementCell) { this.handleSecondPlacement(r, c, cell); } else { this.handleFirstPlacement(r, c); }
@@ -600,7 +987,7 @@
                 else { cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); this.audioPlay('invalid'); }
             }
             saveStateForUndo() { this.lastGameState = this.getState(); }
-            completeMove(r, c) {
+            async completeMove(r, c) {
                 this.gameStateManager.setState('PROCESSING_TURN');
                 this.gridData[r][c] = this.currentRoll[1];
                 this.firstPlacementCell = null;
@@ -608,7 +995,9 @@
                 this.updateProgressBar();
                 this.updateGridCell(r, c);
                 this.audioPlay('pop');
-                setTimeout(this.processTurnEnd.bind(this), 300);
+                
+                await delay(300);
+                this.processTurnEnd();
             }
             processTurnEnd() {
                 if (this.gameStateManager.is('GAME_OVER')) return;
@@ -619,9 +1008,30 @@
             }
             endGame(reason = "") {
                 if (this.gameStateManager.is('GAME_OVER')) return;
-                this.gameStateManager.setState('GAME_OVER'); this.updateAllScores();
-                const finalScore = this.currentTotalScore;
-                if (finalScore > this.highScore) { this.highScore = finalScore; localStorage.setItem(this.config.highScoreKey, this.highScore); }
+                this.stopTimer();
+                this.gameStateManager.setState('GAME_OVER');
+                this.updateAllScores();
+
+                if (reason === "Time's up!") {
+                    this.DOMElements.game_board_container.classList.add('shake-animation');
+                    setTimeout(() => this.DOMElements.game_board_container.classList.remove('shake-animation'), 500);
+                }
+                
+                let finalScore = this.currentTotalScore;
+                
+                const isGridIncomplete = this.gridData.flat().includes(null);
+                if (reason === "Time's up!" && isGridIncomplete) {
+                    finalScore = 0;
+                }
+
+                const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
+                const currentHighScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
+                if (finalScore > currentHighScore) {
+                    localStorage.setItem(highScoreKey, finalScore);
+                    this.highScore = finalScore;
+                    this.triggerConfetti();
+                }
+
                 this.DOMElements.game_over_reason.textContent = reason;
                 this.DOMElements.final_score_modal.textContent = finalScore;
                 this.DOMElements.high_score_modal.textContent = this.highScore;
@@ -632,6 +1042,22 @@
                 this.DOMElements.final_penalty_score.textContent = this.DOMElements.empty_block_penalty.textContent;
                 setTimeout(() => this.DOMElements.game_over_modal.classList.add('is-open'), 500);
             }
+
+            triggerConfetti() {
+                const container = this.DOMElements.effects_container;
+                if (!container) return;
+                const colors = ['#E57373', '#FF8A65', '#FFC107', '#FFF176'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.left = `${Math.random() * 100}%`;
+                    confetti.style.animation = `confetti-fall ${1.5 + Math.random() * 2}s ${Math.random() * 2}s linear forwards`;
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    container.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }
+            }
+
             hasValidMoves() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; for (const [dr, dc] of n) { const nr = r + dr, nc = c + dc; if (nr >= 0 && nr < this.GRID_SIZE && nc >= 0 && nc < this.GRID_SIZE && !this.gridData[nr][nc]) return true; } } return false; }
             detectStuckBlocks() { this.stuckBlocks.clear(); for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; if (n.every(([dr, dc]) => { const nr = r + dr, nc = c + dc; return nr < 0 || nr >= this.GRID_SIZE || nc < 0 || nc >= this.GRID_SIZE || this.gridData[nr][nc] })) this.stuckBlocks.add(`${r},${c}`); } this.updateFullGrid(); }
             updateAllScores() {
@@ -645,6 +1071,9 @@
             calculateCrossScore() {
                 let bonusScore = 0;
                 const getScoreForSegment = (segmentSymbols) => {
+                    if (segmentSymbols.length < this.MIN_SEQUENCE_LENGTH) {
+                        return 0;
+                    }
                     let score = 0; const usedIndices = new Set();
                     for (let len = segmentSymbols.length; len >= this.MIN_SEQUENCE_LENGTH; len--) {
                          for (let i = 0; i <= segmentSymbols.length - len; i++) {
@@ -736,6 +1165,7 @@
                     this.turnCount = state.turnCount;
                     this.stuckBlocks = new Set(state.stuckBlocks);
                     this.gameStateManager.currentState = state.currentState;
+                    this.timeLeft = state.timeLeft;
 
                     this.updateFullGrid();
                     this.updateControlsState();
@@ -761,80 +1191,136 @@
             activeVariantId: null,
             currentGameInstance: null,
             pendingAction: null,
+            activeMode: 'classic',
 
             init() {
                 this.populateEditionModal();
                 this.setupGlobalEventListeners();
-                this.switchVariant('core'); // Default variant
+                this.switchVariant('plain_jean', false);
             },
 
             populateEditionModal() {
                 const container = document.getElementById('edition-options');
+                
                 container.innerHTML = '';
                 Object.values(variantConfigs).forEach(config => {
                     const button = document.createElement('button');
                     button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold transition-colors';
                     button.textContent = config.name;
+                    button.dataset.editionId = config.id; 
                     button.onclick = () => {
                         const game = this.currentGameInstance;
                         const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
                         
                         document.getElementById('edition-select-modal').classList.remove('is-open');
+                        const isTimeBurst = this.activeMode === 'timeburst';
 
                         if (isGameInProgress) {
-                            this.pendingAction = () => this.switchVariant(config.id, true);
+                            this.pendingAction = () => this.switchVariant(config.id, isTimeBurst, true);
                             document.getElementById('confirm-restart-modal').classList.add('is-open');
                         } else {
-                            this.switchVariant(config.id);
+                            this.switchVariant(config.id, isTimeBurst);
                         }
                     };
                     container.appendChild(button);
                 });
             },
 
-            switchVariant(variantId, isNewGame = false) {
+            switchVariant(variantId, isTimeBurst, isNewGame = false) {
                 const gameContainer = document.getElementById('game-container');
                 gameContainer.style.opacity = '0';
 
                 if (this.currentGameInstance && !isNewGame) {
-                    this.gameStates[this.activeVariantId] = this.currentGameInstance.getState();
+                    this.gameStates[this.activeVariantId + (this.currentGameInstance.isTimeBurst ? '_timeburst' : '_classic')] = this.currentGameInstance.getState();
                 }
 
                 setTimeout(() => {
                     this.activeVariantId = variantId;
-                    const config = variantConfigs[variantId];
-                    const savedState = isNewGame ? null : this.gameStates[variantId];
+                    const variantConfig = variantConfigs[variantId];
+                    const themeConfig = themeConfigs[variantConfig.themeId];
+                    
+                    applyTheme(variantConfig.themeId);
+
+                    const gameStateKey = variantId + (isTimeBurst ? '_timeburst' : '_classic');
+                    const savedState = isNewGame ? null : this.gameStates[gameStateKey];
                     
                     if (isNewGame) {
-                        delete this.gameStates[variantId];
+                        delete this.gameStates[gameStateKey];
                     }
 
-                    this.currentGameInstance = new Game(config, savedState);
+                    this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, savedState);
                     
-                    document.getElementById('current-edition-display').textContent = 'Now Playing: ' + config.name;
+                    const editionDisplay = document.getElementById('current-edition-display');
+                    let timeBurstText = isTimeBurst ? ' - <span class="text-red-500 font-bold">Time Burst</span>' : '';
+                    editionDisplay.innerHTML = 'Now Playing: ' + variantConfig.name + timeBurstText;
                     
                     gameContainer.style.opacity = '1';
                 }, 250);
             },
             
             resetCurrentVariant() {
-                this.switchVariant(this.activeVariantId, true);
+                this.switchVariant(this.activeVariantId, this.currentGameInstance.isTimeBurst, true);
             },
             
             setupGlobalEventListeners() {
                 const editionModal = document.getElementById('edition-select-modal');
                 const confirmModal = document.getElementById('confirm-restart-modal');
-                
+                const toggleSwitch = document.getElementById('mode-toggle-switch');
+                const classicText = document.getElementById('classic-text');
+                const timeBurstText = document.getElementById('time-burst-text');
+
                 document.getElementById('select-edition-btn').addEventListener('click', () => {
+                    const isTimeBurst = this.currentGameInstance.isTimeBurst;
+                    this.activeMode = isTimeBurst ? 'timeburst' : 'classic';
+                    
+                    if(isTimeBurst) {
+                        toggleSwitch.classList.add('time-burst-active');
+                        timeBurstText.classList.remove('text-gray-600');
+                        timeBurstText.classList.add('text-red-500');
+                        classicText.classList.add('text-gray-600');
+                    } else {
+                        toggleSwitch.classList.remove('time-burst-active');
+                        classicText.classList.remove('text-gray-600');
+                        timeBurstText.classList.add('text-gray-600');
+                    }
+
+                    const currentEditionId = this.currentGameInstance.config.id;
+                    const editionButtons = document.querySelectorAll('#edition-options button');
+                    editionButtons.forEach(btn => {
+                        btn.classList.remove('edition-selected');
+                        if (btn.dataset.editionId === currentEditionId) {
+                            btn.classList.add('edition-selected');
+                        }
+                    });
+
                     editionModal.classList.add('is-open');
                 });
+
+                toggleSwitch.addEventListener('click', () => {
+                    toggleSwitch.classList.toggle('time-burst-active');
+                    this.activeMode = toggleSwitch.classList.contains('time-burst-active') ? 'timeburst' : 'classic';
+                    if (this.activeMode === 'timeburst') {
+                        timeBurstText.classList.remove('text-gray-600');
+                        timeBurstText.classList.add('text-red-500');
+                        classicText.classList.add('text-gray-600');
+                    } else {
+                        classicText.classList.remove('text-gray-600');
+                        timeBurstText.remove('text-red-500');
+                        timeBurstText.classList.add('text-gray-600');
+                    }
+                });
+                
                 document.getElementById('close-edition-select-btn').addEventListener('click', () => editionModal.classList.remove('is-open'));
 
                 document.getElementById('rules-btn').addEventListener('click', () => this.currentGameInstance.DOMElements.rules_modal.classList.add('is-open'));
 
                 document.getElementById('new-game-btn').addEventListener('click', () => {
                     const game = this.currentGameInstance;
-                    const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
+                    if (game && game.gameStateManager.is('GAME_OVER')) {
+                        this.resetCurrentVariant();
+                        return;
+                    }
+                    const isGameInProgress = game && game.turnCount > 0;
                     
                     if (isGameInProgress) {
                         this.pendingAction = () => this.resetCurrentVariant();
@@ -858,22 +1344,44 @@
                 });
 
                 document.addEventListener('keydown', (e) => {
+                    const game = this.currentGameInstance;
+                    if (!game) return;
+
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        e.preventDefault();
+                        if (e.key === 'ArrowUp') game.moveFocus(-1, 0);
+                        if (e.key === 'ArrowDown') game.moveFocus(1, 0);
+                        if (e.key === 'ArrowLeft') game.moveFocus(0, -1);
+                        if (e.key === 'ArrowRight') game.moveFocus(0, 1);
+                        return;
+                    }
+                    
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (game.gameStateManager.is('AWAITING_ROLL')) {
+                            game.handleRollDice();
+                        } else if (game.gameStateManager.is('AWAITING_PLACEMENT')) {
+                            game.placeWithKeyboard();
+                        }
+                        return;
+                    }
+
                     if (e.key === 'Escape') {
-                        if (this.currentGameInstance?.activeSuperpower) {
-                             if (this.currentGameInstance.activeSuperpower === 'swapThem' && this.currentGameInstance.swapFirstCell) {
-                                this.currentGameInstance.gridCells[this.currentGameInstance.swapFirstCell.r][this.currentGameInstance.swapFirstCell.c].classList.remove('pulse-animation');
-                                this.currentGameInstance.swapFirstCell = null;
+                        if (game.activeSuperpower) {
+                             if (game.activeSuperpower === 'swapThem' && game.swapFirstCell) {
+                                game.gridCells[game.swapFirstCell.r][game.swapFirstCell.c].classList.remove('pulse-animation');
+                                game.swapFirstCell = null;
                             }
-                            this.currentGameInstance.activeSuperpower = null;
-                            this.currentGameInstance.updateSuperpowerButtonsUI();
-                            this.currentGameInstance.gameStateManager.setState(this.currentGameInstance.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
+                            game.activeSuperpower = null;
+                            game.updateSuperpowerButtonsUI();
+                            game.gameStateManager.setState(game.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
                         } else {
                            ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal'].forEach(id => document.getElementById(id).classList.remove('is-open'));
                         }
                     }
-                    if ((e.key === ' ' || e.key === 'Enter') && this.currentGameInstance?.gameStateManager.is('AWAITING_ROLL')) {
+                    if (e.key === ' ' && game.gameStateManager.is('AWAITING_ROLL')) {
                         e.preventDefault();
-                        this.currentGameInstance.handleRollDice();
+                        game.handleRollDice();
                     }
                 });
             }
