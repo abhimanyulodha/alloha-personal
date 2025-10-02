@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alloha - Cacti Facti</title>
+    <title>Alloha</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
@@ -306,11 +307,10 @@
     <div id="game-over-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-md text-center themed-modal p-8 transform scale-95 -translate-y-4 relative">
             <button id="close-game-over-btn" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
-            <h2 class="text-3xl" style="color: var(--text-secondary); font-family: 'Pacifico', cursive;">Alloha</h2>
-            <h2 class="text-5xl font-bold -mt-4 mb-2" style="color: var(--accent); font-family: 'Pacifico', cursive;">Game Over!</h2>
+            <h2 class="text-4xl font-bold mb-2" style="color: var(--accent); font-family: 'Pacifico', cursive;">Game Over!</h2>
             <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
             <p id="final-score-modal" class="text-7xl font-bold my-4" style="color: var(--accent);">0</p>
-            <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs">
+            <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs" style="display: grid;">
                 <div class="grid grid-cols-2 gap-2">
                     <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
                     <div class="text-left">Columns: <span id="final-cols-score" class="float-right font-bold">0</span></div>
@@ -909,26 +909,16 @@
                 return new Set(regularSymbols).size <= 1;
             }
             isLineDead(line) {
-                // A line is dead if no possible 3-in-a-row can be formed.
-                // Iterate through all possible 3-cell windows.
                 for (let i = 0; i <= line.length - this.MIN_SEQUENCE_LENGTH; i++) {
                     const window = line.slice(i, i + this.MIN_SEQUENCE_LENGTH);
-
-                    // If the window contains a cursed block, it can't form a sequence.
                     if (window.includes(this.SPECIAL_SYMBOLS.CURSED)) {
                         continue;
                     }
-
-                    // Check the non-special, non-null symbols in the window.
                     const actualSymbols = window.filter(s => s && s !== this.SPECIAL_SYMBOLS.WILD && s !== this.SPECIAL_SYMBOLS.CURSED);
-                    
-                    // If there are 0 or 1 unique symbols, a sequence is possible (e.g., [A, A, Wild] or [A, null, Wild]).
-                    // If there are more than 1 unique symbols (e.g., [A, B, Wild] or [A, B, C]), no sequence can be formed in this window.
                     if (new Set(actualSymbols).size <= 1) {
-                        return false; // Found a possible sequence, so the line is NOT dead.
+                        return false; 
                     }
                 }
-                // If we checked all windows and none can form a sequence, the line is dead.
                 return true;
             }
             calculateBonusGrids() {
@@ -1194,34 +1184,6 @@
                 }, 500);
             }
 
-            createShareImageSVG(score, highScore, theme) {
-                const bgColor = theme.palette.card || '#f0f0f0';
-                const textColor = theme.palette.text || '#000000';
-                const secondaryColor = theme.palette.text_secondary || '#555555';
-                const accentColor = theme.palette.accent || '#ff0000';
-                const highScoreColor = '#FFC107';
-
-                const pacificoBase64 = "data:font/woff2;base64,d09GMgABAAAAAAeAAAsAAAAAD2AAAAdYAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAVAwSBaQfGhp8C4diAAE2AiQDBgsGAAQgBSUbCAcFGwfcCbFzzd9vJ7tULc29b97F/P4+8g62w7C30x0JUK4WwSBoE5D4lA26+1oV43xYjaZXqA5dYyV8S0N2/n/uubn/d6U2y9uPud738/2u8AFA3AEEuC4jP2zQ4I8eR49f+x6f72/1fA4QAgI+E+0/29n9XwBw8n/p8w+2y06kG/e32sNf4O917N8/18/v7/b8f4/P/B/z/d7X8P+T/m/4/m/+n/P/4/s/9v6v/P/7/+/9/9v4vAIAAgUDAgcChQKPAZgCgQKVAp0CoAKpAp2CpQKtAr8CsQLOAssCzQLMAs8C0QLWAtkC2gLdAt4C4QLiAuQC5gLnAukC6wLsAu0C8ALyAvQC9wL5AvoC/AL+AwIDAgMBgQGBgYIBg4GJAYkBiwGNAY8BkAGSAZMBlAGXAZsBnQGgAaIBpQGoAasBsAGzAbYBtwG5Ab0BvgHBAccByAHLAc4B0AHSAdQB2AHeAeIB5AHnAfIB9AH4AfwCAwIEAgUCBgIHAggCCQIKAgsCDAIJAw8DEgMTAxYDGwMdBhQFGgYkBiYGKAYtBjYGOAY9BkAGSAZQBlYGZAZsBnQGgAaMBpAGlAagBqwGwAbIBsQGyAbUBtgG3AbkBvQG/AcEBygHQAdIB1QHaAdsB4QHmAfYB+wH/AgYCCQINAQoCDwMFAwcDDAMRAxUDGwMdAx8DIQMlAyYDKQMrAy0DNwM5AzoDPQNCBEYgKCBVBYyGDAw5Gj0/FQQQBAEDAwMCBQMEAgUCBAIHAgICBgIBAgQCAwICAgIDBAQAAhM2GgAmxJ1EAn8AAYI2FwAYAAAAAwC7/f376wIeGBkI9wMhABML99nPA42H+zJkYJ4C+e8tA+N8d7uD98m+M863jA3O69P9g0xM3b59+s0M2j23Pffc3/v9n/r7H/T9v/7u793v5/5/T/+P8/p/PPA/1/L+X0f5v6/u/oA9/q/n/v/T/d7X+/1f9/q/9vp/r93/s4XABAFABAAAwLpAmUC6QJ0AmECXQJRAhUCpQKdAmECiQLsAvIC6AKyAqkC5QKFAscCigLtAvIC6QJhAuwC8gLoArICiQIYAuECcQLhAnECcQI1AnECXQJRAhUCpQIEAgQCCwIWAxkDJQMlAyoDIwMnAyYDJgMnAysDFwMYAxYDHgMfAyoDAy0C7QIAA1YkG5Lw7H+3L43xYjaYQdQB2I5wJgEIAQcDA4ICAgICAgICAgICAgQCAgYCBwIIAgkCCgILAgwCDgMPAxEDEgMVAxYDHQMfA0QDRwNIA0sDTgNSAAAAF/8ADwAAAAEAAwACAAAAAP/gAAACAAAAAv///wABAAAAAAAAAAAAAAD////gAAAAA";
-                
-                return `
-                <svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
-                    <style>
-                        @font-face {
-                            font-family: 'Pacifico';
-                            src: url("${pacificoBase64}") format("woff2");
-                        }
-                    </style>
-                    <rect width="100%" height="100%" fill="${bgColor}" />
-                    
-                    <text x="540" y="400" font-family="Pacifico, cursive" font-size="90" fill="${secondaryColor}" text-anchor="middle" dominant-baseline="middle">Alloha</text>
-                    <text x="540" y="520" font-family="Pacifico, cursive" font-weight="bold" font-size="140" fill="${accentColor}" text-anchor="middle" dominant-baseline="middle">Game Over!</text>
-                    
-                    <text x="540" y="900" font-family="sans-serif" font-weight="bold" font-size="400" fill="${accentColor}" text-anchor="middle" dominant-baseline="middle">${score}</text>
-                    
-                    <text x="540" y="1500" font-family="sans-serif" font-size="70" fill="${secondaryColor}" text-anchor="middle" dominant-baseline="middle">High Score: <tspan font-weight="bold" fill="${highScoreColor}">${highScore}</tspan></text>
-                </svg>`;
-            }
-
             async handleShareScore(score, highScore) {
                 const shareBtn = document.getElementById('share-score-btn');
                 const shareBtnSpan = shareBtn.querySelector('span');
@@ -1233,31 +1195,29 @@
                     shareBtnSpan.textContent = 'Generating...';
                     shareBtn.disabled = true;
 
-                    const svgString = this.createShareImageSVG(score, highScore, this.theme);
-                    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-                    const url = URL.createObjectURL(svgBlob);
+                    const scoreBreakdown = document.getElementById('score-breakdown');
+                    const buttonContainer = document.getElementById('game-over-buttons');
+                    const modalContent = document.querySelector('#game-over-modal .modal-content');
 
-                    const pngBlob = await new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            canvas.width = 1080;
-                            canvas.height = 1920;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0);
-                            URL.revokeObjectURL(url);
-                            canvas.toBlob(resolve, 'image/png');
-                        };
-                        img.onerror = () => {
-                            URL.revokeObjectURL(url);
-                            reject(new Error("Image loading failed for SVG conversion."));
-                        };
-                        img.src = url;
+                    if (scoreBreakdown) scoreBreakdown.style.display = 'none';
+                    if (buttonContainer) buttonContainer.style.display = 'none';
+
+                    // Use a timeout to ensure the DOM updates before capturing
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
+                    const canvas = await html2canvas(modalContent, {
+                        allowTaint: true,
+                        useCORS: true,
+                        backgroundColor: null 
                     });
 
-                    if (!pngBlob) throw new Error("PNG Blob generation failed.");
+                    if (scoreBreakdown) scoreBreakdown.style.display = 'grid';
+                    if (buttonContainer) buttonContainer.style.display = 'flex';
 
-                    const file = new File([pngBlob], 'alloha-score.png', { type: 'image/png' });
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    if (!blob) throw new Error("Canvas to Blob conversion failed.");
+                    
+                    const file = new File([blob], 'alloha-score.png', { type: 'image/png' });
                     const editionName = this.config.name;
                     const shareText = `✨ I scored ${score} in Alloha! ✨\n\nThink you can beat my score in the Alloha - ${editionName} edition? 🎲\n\nPlay now: https://your-game-url-here.com`;
 
@@ -1269,7 +1229,7 @@
                         });
                     } else {
                         const link = document.createElement('a');
-                        link.href = URL.createObjectURL(pngBlob);
+                        link.href = URL.createObjectURL(blob);
                         link.download = 'Alloha-Score.png';
                         document.body.appendChild(link);
                         link.click();
@@ -1279,6 +1239,8 @@
                 } catch (error) {
                     console.error('Sharing/downloading failed:', error);
                     shareBtnSpan.textContent = 'Error!';
+                    if (document.getElementById('score-breakdown')) document.getElementById('score-breakdown').style.display = 'grid';
+                    if (document.getElementById('game-over-buttons')) document.getElementById('game-over-buttons').style.display = 'flex';
                 } finally {
                     setTimeout(() => {
                         shareBtn.innerHTML = originalBtnContent;
@@ -1347,8 +1309,6 @@
                     for (let i = 0; i < this.GRID_SIZE; i++) {
                         diagonal.push(this.gridData[i][this.GRID_SIZE - 1 - i]);
                     }
-                    // Only score the diagonal if it hasn't already been scored as part of a row/col segment.
-                    // For Zedi Zodi, r=0, r=6, and the diagonal are highlighted. The diagonal is distinct.
                     bonusScore += getScoreForSegment(diagonal);
                 }
 
