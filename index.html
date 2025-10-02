@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alloha - Cacti Facti</title>
+    <title>Alloha</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,8 @@
             --accent-gradient-shaded: linear-gradient(135deg, #EE9A9A 0%, #FFCCBC 100%);
             --highlighted-bg: rgba(229, 115, 115, 0.15);
             --highlighted-border: rgba(229, 115, 115, 0.3);
+            --grid-cell-bg: #FAF8F5;
+            --toggle-bg-inactive: #E0E0E0;
             --stuck-block: linear-gradient(135deg, #757575 0%, #616161 100%);
             --glass-border: rgba(255, 255, 255, 0.2);
             --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.06);
@@ -35,6 +37,7 @@
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            transition: background 0.3s ease-in-out;
         }
         .themed-button {
             font-weight: 600; border-radius: 12px; transition: all 0.3s var(--ease-smooth);
@@ -50,14 +53,17 @@
         }
         .grid-cell {
             aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: clamp(1.2rem, 5.5vw, 2.75rem);
-            transition: all 0.3s var(--ease-smooth); background: #FAF8F5;
+            transition: all 0.3s var(--ease-smooth); background: var(--grid-cell-bg);
             border: 1px solid rgba(0, 0, 0, 0.08);
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
             position: relative; overflow: hidden; min-width: 40px; min-height: 40px;
         }
         .themed-modal { border-radius: 20px; background: var(--card); box-shadow: var(--shadow-strong); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
         
-        .progress-bar-container { position: relative; overflow: hidden; background: rgba(229, 115, 115, 0.15); border-radius: 9999px; }
+        #new-game-btn, #confirm-restart-btn, #play-again-btn { background: var(--accent-gradient); }
+        #select-edition-btn { background: var(--accent-gradient-shaded); }
+
+        .progress-bar-container { position: relative; overflow: hidden; background: var(--accent-light); border-radius: 9999px; }
         .progress-bar-fill { background: var(--accent-gradient); position: relative; overflow: hidden; transition: width 0.3s var(--ease-smooth); height: 100%; }
         .progress-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%); animation: progress-shimmer 2s infinite; }
         @keyframes progress-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
@@ -89,7 +95,7 @@
         #close-rules-btn:hover, #close-game-over-btn:hover, #close-edition-select-btn:hover, #confirm-cancel-btn:hover { color: var(--text); background-color: var(--accent-light); }
         
         .score-display-cell { 
-            background: #FAF8F5 !important; 
+            background: var(--grid-cell-bg) !important; 
             color: var(--text-secondary);
             font-size: clamp(1rem, 4vw, 1.5rem);
         }
@@ -105,9 +111,14 @@
         .alloha-logo svg { width: 100%; height: 100%; }
         .alloha-logo svg path, .alloha-logo svg g { fill: var(--accent) !important; }
 
-        #mode-toggle-switch { transition: background-color 0.2s ease-in-out; }
+        #mode-toggle-switch { transition: background-color 0.2s ease-in-out; background-color: var(--toggle-bg-inactive); }
         #mode-toggle-switch.time-burst-active { background-color: var(--accent); }
         #mode-toggle-switch.time-burst-active #mode-toggle-thumb { transform: translateX(1.5rem); }
+
+        #timer-display { 
+            font-variant-numeric: tabular-nums;
+            transform: translateZ(0); /* Flicker fix */
+        }
 
         #edition-options::-webkit-scrollbar { width: 8px; }
         #edition-options::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
@@ -115,24 +126,6 @@
         #edition-options::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
 
         .edition-selected { background-color: var(--accent-light) !important; font-weight: 700; color: var(--accent); }
-
-        .shockwave {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,138,101,0) 0%, rgba(229,115,115,0.8) 40%, rgba(229,115,115,0) 70%);
-            transform: translate(-50%, -50%);
-            animation: shockwave-animation 0.7s ease-out forwards;
-            opacity: 0;
-        }
-
-        @keyframes shockwave-animation {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(10); opacity: 0; }
-        }
 
         .confetti-piece {
             position: absolute;
@@ -166,7 +159,7 @@
                     <div id="col-scores-display" class="col-span-7 grid grid-cols-7 mt-1 lg:mt-0 gap-1 lg:gap-2"></div>
                     <div class="flex items-center justify-center p-1">
                         <div class="alloha-logo">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" viewBox="0 0 396.75 396.749985" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><clipPath id="864cd2432c"><path d="M 40 0 L 355 0 L 355 396.5 L 40 396.5 Z M 40 0 " clip-rule="nonzero"/></clipPath><clipPath id="9e91a8b430"><rect x="0" width="169" y="0" height="269"/></clipPath><clipPath id="9a4060e8fa"><path d="M 146 116 L 314.976562 116 L 314.976562 396.5 L 146 396.5 Z M 146 116 " clip-rule="nonzero"/></clipPath><clipPath id="f5a1301079"><rect x="0" width="169" y="0" height="281"/></clipPath><clipPath id="45fb35c46f"><rect x="0" width="166" y="0" height="269"/></clipPath><clipPath id="cd05768fb1"><path d="M 0.292969 116 L 171 116 L 171 396.5 L 0.292969 396.5 Z M 0.292969 116 " clip-rule="nonzero"/></clipPath><clipPath id="f5e8ebd13e"><rect x="0" width="171" y="0" height="281"/></clipPath><clipPath id="22bb000506"><path d="M 242.375 20.429688 L 285.164062 20.429688 L 285.164062 140.25 L 242.375 140.25 Z M 242.375 20.429688 " clip-rule="nonzero"/></clipPath><clipPath id="cb13c63ddb"><path d="M 0.375 0.429688 L 43.164062 0.429688 L 43.164062 120.25 L 0.375 120.25 Z M 0.375 0.429688 " clip-rule="nonzero"/></clipPath><clipPath id="7703948ec8"><rect x="0" width="44" y="0" height="121"/></clipPath><clipPath id="0f7bc66451"><path d="M 213.839844 20.4375 L 276.609375 20.4375 L 276.609375 63.222656 L 213.839844 63.222656 Z M 213.839844 20.4375 " clip-rule="nonzero"/></clipPath><clipPath id="90aa4af11e"><path d="M 0.839844 0.4375 L 63.609375 0.4375 L 63.609375 43.222656 L 0.839844 43.222656 Z M 0.839844 0.4375 " clip-rule="nonzero"/></clipPath><clipPath id="75d75e67e1"><rect x="0" width="64" y="0" height="44"/></clipPath><clipPath id="e5df82bf12"><rect x="0" width="315" y="0" height="397"/></clipPath></defs><g clip-path="url(#864cd2432c)"><g transform="matrix(1, 0, 0, 1, 40, 0)"><g clip-path="url(#e5df82bf12)"><g transform="matrix(1, 0, 0, 1, 1, 0)"><g clip-path="url(#9e91a8b430)"><g fill="#000000" fill-opacity="1"><g transform="translate(0.873977, 194.870819)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -48.675781 L 94.207031 -48.675781 L 94.207031 0 Z M 94.207031 -88.449219 L 50.503906 -88.449219 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -88.449219 "/></g></g></g></g></g><g clip-path="url(#9a4060e8fa)"><g transform="matrix(1, 0, 0, 1, 146, 116)"><g clip-path="url(#f5a1301079)"><g fill="#000000" fill-opacity="1"><g transform="translate(1.206642, 267.950498)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 94.207031 -39.777344 L 50.503906 -39.777344 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -39.777344 "/></g></g></g></g></g></g><g transform="matrix(1, 0, 0, 1, 148, 0)"><g clip-path="url(#45fb35c46f)"><g fill="#000000" fill-opacity="1"><g transform="translate(0.26582, 194.870819)"><g><path d="M 137.386719 0 L 137.386719 -39.777344 L 50.503906 -39.777344 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 137.386719 0 "/></g></g></g></g></g><g clip-path="url(#cd05768fb1)"><g transform="matrix(1, 0, 0, 1, -0.000000000000007105, 116)"><g clip-path="url(#f5e8ebd13e)"><g fill="#000000" fill-opacity="1"><g transform="translate(1.876102, 267.950498)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 94.207031 -174.546875 L 94.207031 -107.03125 L 50.503906 -107.03125 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -68.5625 L 94.207031 -68.5625 L 94.207031 0 Z M 137.910156 0 "/></g></g></g></g></g></g><g clip-path="url(#22bb000506)"><g transform="matrix(1, 0, 0, 1, 242, 20)"><g clip-path="url(#7703948ec8)"><g clip-path="url(#cb13c63ddb)"><path fill="#000000" d="M 43.164062 120.25 L 0.375 120.25 L 0.375 0.414062 L 43.164062 0.414062 Z M 43.164062 120.25 " fill-opacity="1" fill-rule="nonzero"/></g></g></g></g><g clip-path="url(#0f7bc66451)"><g transform="matrix(1, 0, 0, 1, 213, 20)"><g clip-path="url(#75d75e67e1)"><g clip-path="url(#90aa4af11e)"><path fill="#000000" d="M 0.839844 43.222656 L 0.839844 0.4375 L 63.683594 0.4375 L 63.683594 43.222656 Z M 0.839844 43.222656 " fill-opacity="1" fill-rule="nonzero"/></g></g></g></g></g></g></g></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 396.75 396.749985" preserveAspectRatio="xMidYMid meet"><defs><clipPath id="864cd2432c"><path d="M 40 0 L 355 0 L 355 396.5 L 40 396.5 Z M 40 0 "/></clipPath></defs><g clip-path="url(#864cd2432c)"><g transform="matrix(1, 0, 0, 1, 40, 0)"><g><g transform="matrix(1, 0, 0, 1, 1, 0)"><g><g fill-opacity="1"><g transform="translate(0.873977, 194.870819)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -48.675781 L 94.207031 -48.675781 L 94.207031 0 Z M 94.207031 -88.449219 L 50.503906 -88.449219 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -88.449219 "/></g></g></g></g><g transform="matrix(1, 0, 0, 1, 146, 116)"><g><g fill-opacity="1"><g transform="translate(1.206642, 267.950498)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 94.207031 -39.777344 L 50.503906 -39.777344 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -39.777344 "/></g></g></g></g></g><g transform="matrix(1, 0, 0, 1, 148, 0)"><g><g fill-opacity="1"><g transform="translate(0.26582, 194.870819)"><g><path d="M 137.386719 0 L 137.386719 -39.777344 L 50.503906 -39.777344 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 137.386719 0 "/></g></g></g></g></g><g transform="matrix(1, 0, 0, 1, -0.000000000000007105, 116)"><g><g fill-opacity="1"><g transform="translate(1.876102, 267.950498)"><g><path d="M 137.910156 0 L 137.910156 -174.546875 L 94.207031 -174.546875 L 94.207031 -107.03125 L 50.503906 -107.03125 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -68.5625 L 94.207031 -68.5625 L 94.207031 0 Z M 137.910156 0 "/></g></g></g></g></g><g transform="matrix(1, 0, 0, 1, 242, 20)"><g><path fill-rule="nonzero" d="M 43.164062 120.25 L 0.375 120.25 L 0.375 0.414062 L 43.164062 0.414062 Z M 43.164062 120.25 "/></g></g><g transform="matrix(1, 0, 0, 1, 213, 20)"><g><path fill-rule="nonzero" d="M 0.839844 43.222656 L 0.839844 0.4375 L 63.683594 0.4375 L 63.683594 43.222656 Z M 0.839844 43.222656 "/></g></g></g></g></g></g></svg>
                         </div>
                     </div>
                 </div>
@@ -184,11 +177,11 @@
 
                 <div class="flex justify-center items-center gap-3">
                     <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
-                    <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm" style="background: var(--accent-gradient);">New Game</button>
+                    <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm">New Game</button>
                 </div>
 
                 <div class="text-center">
-                    <button id="select-edition-btn" class="w-full py-2 px-4 themed-button text-white text-sm flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
+                    <button id="select-edition-btn" class="w-full py-2 px-4 themed-button text-white text-sm flex items-center justify-center gap-2">
                         Select Game Edition
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
@@ -225,31 +218,59 @@
 
     <div id="rules-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-lg themed-modal p-6 transform scale-95 -translate-y-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="rules-title" class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">How to Play</h2>
-                <button id="close-rules-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex-grow">
+                    <h2 id="rules-title" class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">Alloha</h2>
+                    <p class="text-sm -mt-2" style="color: var(--text-secondary);">A fun & simple game by Abhimanyu Lodha</p>
+                </div>
+                <button id="close-rules-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold flex-shrink-0">×</button>
             </div>
             <div class="space-y-4 text-sm max-h-[70vh] overflow-y-auto pr-2" style="color: var(--text-secondary)">
-                 <h3 class="font-bold text-lg" style="color: var(--accent);">Gameplay</h3>
-                 <ol class="list-decimal list-inside space-y-1">
-                    <li>Choose your starting Alloha.</li>
-                    <li>Click "Roll Dice" to get two new Allohas.</li>
-                    <li>Place both Allohas in any two empty, adjacent (not diagonal) squares.</li>
-                    <li>Click the "Select Game Edition" button on the right panel to choose from different game versions with unique scoring patterns.</li>
+                <h3 class="font-bold text-lg" style="color: var(--accent);">🎯 The Goal</h3>
+                <p>Fill the 7x7 grid by placing pairs of 'Allohas' to create lines and patterns of matching symbols. Score the most points before the grid is full!</p>
+                
+                <h3 class="font-bold text-lg" style="color: var(--accent);">🕹️ How to Play</h3>
+                <ol class="list-decimal list-inside space-y-1">
+                    <li><b>Start Your Game:</b> At the beginning, choose any Alloha to place on the board.</li>
+                    <li><b>Roll the Dice:</b> Click the '🎲' button to get your two Allohas for the turn.</li>
+                    <li><b>Place Your Pair:</b> Place both Allohas in any two empty, adjacent (but not diagonal) squares on the grid.</li>
+                    <li><b>Explore Editions:</b> Use the "Select Game Edition" button to discover different versions of the game, each with a unique theme and a special "Twinning" scoring pattern!</li>
                 </ol>
-                 <h3 class="font-bold text-lg" style="color: var(--accent);">Special Powers</h3>
-                 <p>Use two different superpowers per game. Each power can only be used once.</p>
-                 <ul class="list-disc list-inside space-y-1"><li><b>Past Lives:</b> Undoes your last completed move.</li><li><b>Bomb Bae:</b> Click to activate, then click a stuck block (💣) to fill it with a random Alloha.</li><li><b>No Return:</b> Click to activate, then click any Alloha on the grid to swap it.</li><li><b>Swap Them:</b> Click to activate, then click any two adjacent Allohas to swap their positions. Must be used before you roll the dice.</li></ul>
-                 <h3 class="font-bold text-lg" style="color: var(--accent);">Special Blocks</h3>
-                 <ul class="list-disc list-inside space-y-1">
-                    <li><b>Wild Card (💎):</b> A rare treasure! This special piece acts as any Alloha and can complete any line. Appears once per game.</li>
-                    <li><b>Cursed Block (☠️):</b> An immovable obstacle! This block cannot be removed by Bomb Bae or swapped with No Return. Appears once per game.</li>
-                 </ul>
-                 <h3 class="font-bold text-lg" style="color: var(--accent);">Scoring</h3>
-                 <ul class="list-disc list-inside space-y-1"><li><b>3 in a line:</b> 3 points</li><li><b>4 in a line:</b> 5 points</li><li><b>5 in a line:</b> 8 points</li><li><b>6 in a line:</b> 12 points</li><li><b>7 in a line:</b> 20 points</li>
-                 <li><b>Twinning Pattern Bonus:</b> Scores on the special highlighted pattern are doubled!</li>
-                 <li><b>Grid Bonus:</b> 2x2, 3x3, etc. grids of the same Alloha give bonus points (size * size).</li>
-                 <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning pattern gets a -5 penalty.</li></ul>
+                
+                <h3 class="font-bold text-lg" style="color: var(--accent);">✨ Superpowers</h3>
+                <p>You can use <b>two different superpowers</b> once per game to get out of a tight spot!</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><b>Past Lives:</b> Undoes your most recent move (placing a pair of Allohas).</li>
+                    <li><b>Bomb Bae:</b> Lets you clear a stuck block (💣) by filling it with a random Alloha.</li>
+                    <li><b>No Return:</b> Exchange any Alloha on the grid for a new one of your choice from the symbol set.</li>
+                    <li><b>Swap Them:</b> Swap the positions of any two adjacent Allohas. This must be used <b>before</b> you roll the dice.</li>
+                </ul>
+                
+                <h3 class="font-bold text-lg" style="color: var(--accent);">🎲 Special Blocks</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><b>Wild Card (💎):</b> A powerful gem that acts as <b>any</b> Alloha to help you complete a line. It appears once per game.</li>
+                    <li><b>Cursed Block (☠️):</b> An immovable obstacle that cannot be changed or removed by any superpower. It also appears once per game.</li>
+                </ul>
+            
+                <h3 class="font-bold text-lg" style="color: var(--accent);">📈 Scoring & Bonuses</h3>
+                <p>Points are awarded for creating lines of 3 or more matching Allohas in rows or columns.</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><b>3 in a line:</b> 3 points</li>
+                    <li><b>4 in a line:</b> 5 points</li>
+                    <li><b>5 in a line:</b> 8 points</li>
+                    <li><b>6 in a line:</b> 12 points</li>
+                    <li><b>7 in a line:</b> 20 points</li>
+                </ul>
+                <p>On top of that, you can earn big with these bonuses:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><b>Twinning Bonus:</b> Create sequences on the special <b>highlighted pattern</b>. You score points for these lines <b>in addition</b> to their normal row or column score!</li>
+                    <li><b>Grid Bonus:</b> Form a square of 2x2, 3x3, or larger with the same Alloha to earn bonus points equal to its size squared (e.g., a 2x2 grid gives 4 bonus points).</li>
+                </ul>
+                
+                <h3 class="font-bold text-lg" style="color: var(--accent);">Penalty</h3>
+                <p>Be careful! Any row, column, or Twinning Pattern line that can no longer form a 3-symbol sequence will receive a <b>-5 point penalty</b>.</p>
+            
+                <p class="pt-4 italic">Have fun. And if you have read till here, then DM @sonofarjuna for a free chocolate.</p>
             </div>
         </div>
     </div>
@@ -261,11 +282,11 @@
                  <button id="close-edition-select-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             </div>
             <div class="flex items-center justify-center mb-4 space-x-4">
-                <span id="classic-text" class="font-semibold text-gray-600">Classic</span>
-                <div id="mode-toggle-switch" class="w-14 h-8 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer">
+                <span id="classic-text" class="font-semibold" style="color: var(--text-secondary)">Classic</span>
+                <div id="mode-toggle-switch" class="w-14 h-8 flex items-center rounded-full p-1 cursor-pointer">
                     <div id="mode-toggle-thumb" class="bg-white w-6 h-6 rounded-full shadow-md transform transition-transform"></div>
                 </div>
-                <span id="time-burst-text" class="font-semibold text-gray-600">Time Burst</span>
+                <span id="time-burst-text" class="font-semibold" style="color: var(--text-secondary)">Time Burst</span>
             </div>
             <div id="edition-options" class="flex flex-col gap-3 max-h-64 overflow-y-auto"></div>
         </div>
@@ -277,7 +298,7 @@
             <p class="mb-6" style="color: var(--text-secondary);">Your current progress will be lost. Are you sure?</p>
             <div class="flex justify-center items-center gap-3">
                 <button id="confirm-cancel-btn" class="flex-1 py-2 px-4 themed-button text-sm" style="color: var(--text-secondary); background: rgba(0,0,0,0.05);">Cancel</button>
-                <button id="confirm-restart-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm" style="background: var(--accent-gradient);">Restart</button>
+                <button id="confirm-restart-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm">Restart</button>
             </div>
         </div>
     </div>
@@ -298,7 +319,15 @@
                 </div>
             </div>
             <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
-            <button id="play-again-btn" class="w-full mt-6 themed-button text-white font-bold py-3 px-4 rounded-xl text-xl" style="background: var(--accent-gradient);">Play Again</button>
+            <div class="flex items-center gap-3 mt-6">
+                <button id="play-again-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
+                <button id="share-score-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                    </svg>
+                    <span>Share Score</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -310,6 +339,7 @@
     </div>
 
     <script>
+        // --- THEME CONFIGURATIONS ---
         const themeConfigs = {
             pastel_pals: {
                 name: "Pastel Pals",
@@ -320,8 +350,12 @@
                     text: '#4A148C',
                     text_secondary: '#7B1FA2',
                     accent: '#8E24AA',
+                    accent_gradient: 'linear-gradient(135deg, #8E24AA 0%, #AB47BC 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #BA68C8 0%, #CE93D8 100%)',
                     highlighted_bg: 'rgba(142, 36, 170, 0.15)',
                     highlighted_border: 'rgba(142, 36, 170, 0.3)',
+                    grid_cell_bg: '#F9F6FB',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🐰':'text-pink-400', '🐶':'text-amber-600', '🐯':'text-orange-500', '🐼':'text-gray-700', '🦄':'text-purple-500', '🐸':'text-green-500' }
             },
@@ -334,8 +368,12 @@
                     text: '#33691E',
                     text_secondary: '#689F38',
                     accent: '#8BC34A',
+                    accent_gradient: 'linear-gradient(135deg, #8BC34A 0%, #9CCC65 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #AED581 0%, #C5E1A5 100%)',
                     highlighted_bg: 'rgba(139, 195, 74, 0.15)',
                     highlighted_border: 'rgba(139, 195, 74, 0.3)',
+                    grid_cell_bg: '#FCFFF5',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🥑':'text-green-800', '🥦':'text-green-600', '🧄':'text-gray-500', '🌽':'text-yellow-500', '🫑':'text-green-700', '🌶️':'text-red-600' }
             },
@@ -348,8 +386,12 @@
                     text: '#004D40',
                     text_secondary: '#00796B',
                     accent: '#009688',
+                    accent_gradient: 'linear-gradient(135deg, #009688 0%, #26A69A 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #4DB6AC 0%, #80CBC4 100%)',
                     highlighted_bg: 'rgba(0, 150, 136, 0.15)',
                     highlighted_border: 'rgba(0, 150, 136, 0.3)',
+                    grid_cell_bg: '#F5FCFB',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🦋':'text-blue-500', '🐝':'text-yellow-500', '🪲':'text-amber-800', '🐛':'text-lime-600', '🐞':'text-red-600', '🪰':'text-gray-700' }
             },
@@ -362,10 +404,32 @@
                     text: '#8D6E63',
                     text_secondary: '#A1887F',
                     accent: '#AF8260',
+                    accent_gradient: 'linear-gradient(135deg, #AF8260 0%, #C19A7B 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #D4B298 0%, #E6C9B4 100%)',
                     highlighted_bg: 'rgba(175, 130, 96, 0.15)',
                     highlighted_border: 'rgba(175, 130, 96, 0.3)',
+                    grid_cell_bg: '#FFFBF2',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🍞':'text-amber-800', '🥯':'text-amber-700', '🥐':'text-orange-600', '🧇':'text-yellow-700', '🍪':'text-amber-900', '🥞':'text-amber-600' }
+            },
+            school_of_magic: {
+                name: "School of Magic",
+                symbols: ['🧙‍♀️', '🦉', '📜', '🏆', '🏟️', '🔮'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #4E342E 0%, #212121 100%)',
+                    card: 'rgba(78, 52, 46, 0.75)',
+                    text: '#FFECB3',
+                    text_secondary: '#D7CCC8',
+                    accent: '#D32F2F',
+                    accent_gradient: 'linear-gradient(135deg, #D32F2F 0%, #FFC107 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #EF5350 0%, #FFD54F 100%)',
+                    highlighted_bg: 'rgba(211, 47, 47, 0.15)',
+                    highlighted_border: 'rgba(211, 47, 47, 0.3)',
+                    grid_cell_bg: '#5D4037',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
+                },
+                symbolColors: { '🧙‍♀️':'text-purple-300', '🦉':'text-gray-300', '📜':'text-yellow-200', '🏆':'text-yellow-400', '🏟️':'text-gray-400', '🔮':'text-purple-400' }
             },
             deep_ocean: {
                 name: "Deep Ocean",
@@ -376,8 +440,12 @@
                     text: '#E3F2FD',
                     text_secondary: '#90CAF9',
                     accent: '#42A5F5',
+                    accent_gradient: 'linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #90CAF9 0%, #BBDEFB 100%)',
                     highlighted_bg: 'rgba(66, 165, 245, 0.2)',
                     highlighted_border: 'rgba(66, 165, 245, 0.4)',
+                    grid_cell_bg: '#1976D2',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
                 },
                 symbolColors: { '🐡':'text-yellow-300', '🦑':'text-pink-300', '🦀':'text-red-400', '🐙':'text-purple-300', '🐳':'text-blue-300', '🐠':'text-orange-300' }
             },
@@ -390,10 +458,14 @@
                     text: '#ECEFF1',
                     text_secondary: '#B0BEC5',
                     accent: '#1976D2',
+                    accent_gradient: 'linear-gradient(135deg, #1976D2 0%, #2196F3 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%)',
                     highlighted_bg: 'rgba(25, 118, 210, 0.15)',
                     highlighted_border: 'rgba(25, 118, 210, 0.3)',
+                    grid_cell_bg: '#546E7A',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
                 },
-                symbolColors: { '⛓️':'text-gray-400', '🚔':'text-blue-400', '👮':'text-yellow-400', '🏛️':'text-gray-300', '🔒':'text-amber-400', '🚪':'text-orange-400' }
+                symbolColors: { '⛓️':'text-gray-300', '🚔':'text-blue-300', '👮':'text-yellow-300', '🏛️':'text-gray-200', '🔒':'text-amber-300', '🚪':'text-orange-300' }
             },
             the_post_office: {
                 name: "The Post Office",
@@ -404,8 +476,12 @@
                     text: '#3E2723',
                     text_secondary: '#6D4C41',
                     accent: '#D32F2F',
+                    accent_gradient: 'linear-gradient(135deg, #D32F2F 0%, #E53935 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #EF5350 0%, #E57373 100%)',
                     highlighted_bg: 'rgba(211, 47, 47, 0.1)',
                     highlighted_border: 'rgba(211, 47, 47, 0.25)',
+                    grid_cell_bg: '#F8F5F3',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '📦':'text-amber-800', '📮':'text-red-600', '🗂️':'text-gray-500', '🗳️':'text-blue-700', '🗄️':'text-gray-600', '📬':'text-red-700' }
             },
@@ -418,10 +494,32 @@
                     text: '#4E342E',
                     text_secondary: '#8D6E63',
                     accent: '#EC407A',
+                    accent_gradient: 'linear-gradient(135deg, #EC407A 0%, #F06292 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #F48FB1 0%, #F8BBD0 100%)',
                     highlighted_bg: 'rgba(236, 64, 122, 0.1)',
                     highlighted_border: 'rgba(236, 64, 122, 0.25)',
+                    grid_cell_bg: '#FFFFFF',
+                    toggle_bg_inactive: '#F0F0F0',
                 },
                 symbolColors: { '🍓':'text-red-500', '🫐':'text-blue-600', '🍉':'text-green-600', '🥝':'text-lime-700', '🥭':'text-orange-500', '🍋':'text-yellow-500' }
+            },
+            zedi_zodi: {
+                name: "Zodiac Night",
+                symbols: ['♋', '♒', '♎', '♐', '♌', '♉'],
+                palette: {
+                    bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 100%)',
+                    card: 'rgba(48, 43, 99, 0.75)',
+                    text: '#FFFFFF',
+                    text_secondary: '#A9B4D1',
+                    accent: '#FFD700',
+                    accent_gradient: 'linear-gradient(135deg, #FFD700 0%, #FFA000 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #FFECB3 0%, #FFD54F 100%)',
+                    highlighted_bg: 'rgba(255, 215, 0, 0.15)',
+                    highlighted_border: 'rgba(255, 215, 0, 0.3)',
+                    grid_cell_bg: '#4A4E69',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
+                },
+                symbolColors: { '♋':'text-gray-300', '♒':'text-blue-300', '♎':'text-pink-300', '♐':'text-orange-300', '♌':'text-yellow-300', '♉':'text-green-300' }
             },
             desert_oasis: {
                 name: "Desert Oasis",
@@ -432,8 +530,12 @@
                     text: '#5D4037',
                     text_secondary: '#8D6E63',
                     accent: '#00897B',
+                    accent_gradient: 'linear-gradient(135deg, #00897B 0%, #26A69A 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #4DB6AC 0%, #80CBC4 100%)',
                     highlighted_bg: 'rgba(0, 137, 123, 0.15)',
                     highlighted_border: 'rgba(0, 137, 123, 0.3)',
+                    grid_cell_bg: '#FFFBF2',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🌵':'text-green-700', '🪨':'text-gray-600', '☀️':'text-yellow-600', '🐍':'text-emerald-800', '⛺':'text-orange-700', '🌴':'text-lime-800' }
             },
@@ -446,24 +548,32 @@
                     text: '#0D47A1',
                     text_secondary: '#1976D2',
                     accent: '#FFA000',
+                    accent_gradient: 'linear-gradient(135deg, #FFA000 0%, #FFB300 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)',
                     highlighted_bg: 'rgba(255, 160, 0, 0.15)',
                     highlighted_border: 'rgba(255, 160, 0, 0.3)',
+                    grid_cell_bg: '#F7FBFF',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🐔':'text-red-600', '🐦':'text-blue-500', '🐥':'text-yellow-500', '🐣':'text-yellow-400', '🐝':'text-yellow-600', '🐧':'text-gray-800' }
             },
             creepy_crawlies: {
                 name: "Creepy Crawlies",
-                symbols: ['🐍', '🦎', '🦂', '🐭', '🥚', '🕷️'],
+                symbols: ['🐍', '🦎', '🦂', '🐭', '🥚', '🐁'],
                 palette: {
                     bg: 'linear-gradient(135deg, #37474F 0%, #212121 100%)',
                     card: 'rgba(38, 50, 56, 0.8)',
                     text: '#CFD8DC',
                     text_secondary: '#90A4AE',
                     accent: '#7E57C2',
+                    accent_gradient: 'linear-gradient(135deg, #7E57C2 0%, #9575CD 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #B39DDB 0%, #D1C4E9 100%)',
                     highlighted_bg: 'rgba(126, 87, 194, 0.15)',
                     highlighted_border: 'rgba(126, 87, 194, 0.3)',
+                    grid_cell_bg: '#455A64',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
                 },
-                symbolColors: { '🐍':'text-green-400', '🦎':'text-lime-400', '🦂':'text-red-400', '🐭':'text-gray-400', '🥚':'text-gray-200', '🕷️':'text-gray-300' }
+                symbolColors: { '🐍':'text-green-400', '🦎':'text-lime-400', '🦂':'text-red-400', '🐭':'text-gray-300', '🥚':'text-gray-200', '🐁':'text-gray-100' }
             },
             ancient_secrets: {
                 name: "Ancient Secrets",
@@ -474,10 +584,14 @@
                     text: '#D7CCC8',
                     text_secondary: '#A1887F',
                     accent: '#FFCA28',
+                    accent_gradient: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #FFA000 0%, #FF6F00 100%)',
                     highlighted_bg: 'rgba(255, 202, 40, 0.15)',
                     highlighted_border: 'rgba(255, 202, 40, 0.3)',
+                    grid_cell_bg: '#6D4C41',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
                 },
-                symbolColors: { '🔍':'text-blue-300', '🧩':'text-orange-300', '🀄':'text-red-400', '🔑':'text-yellow-300', '🧭':'text-gray-300', '👁️':'text-cyan-300' }
+                symbolColors: { '🔍':'text-blue-300', '🧩':'text-orange-300', '🀄':'text-red-300', '🔑':'text-yellow-300', '🧭':'text-gray-300', '👁️':'text-cyan-300' }
             },
             cosmic_drift: {
                 name: "Cosmic Drift",
@@ -488,10 +602,14 @@
                     text: '#E8EAF6',
                     text_secondary: '#9FA8DA',
                     accent: '#536DFE',
+                    accent_gradient: 'linear-gradient(135deg, #536DFE 0%, #7C4DFF 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #7C4DFF 0%, #B388FF 100%)',
                     highlighted_bg: 'rgba(83, 109, 254, 0.2)',
                     highlighted_border: 'rgba(83, 109, 254, 0.4)',
+                    grid_cell_bg: '#3949AB',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
                 },
-                symbolColors: { '🌍':'text-blue-300', '🚀':'text-gray-300', '🪐':'text-amber-300', '🌗':'text-gray-200', '💫':'text-yellow-300', '🛰️':'text-blue-200' }
+                symbolColors: { '🌍':'text-blue-300', '🚀':'text-gray-200', '🪐':'text-amber-300', '🌗':'text-gray-100', '💫':'text-yellow-300', '🛰️':'text-blue-200' }
             },
             petal_meadow: {
                 name: "Petal Meadow",
@@ -502,8 +620,12 @@
                     text: '#2E7D32',
                     text_secondary: '#558B2F',
                     accent: '#D81B60',
+                    accent_gradient: 'linear-gradient(135deg, #D81B60 0%, #E91E63 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #F06292 0%, #F48FB1 100%)',
                     highlighted_bg: 'rgba(216, 27, 96, 0.1)',
                     highlighted_border: 'rgba(216, 27, 96, 0.25)',
+                    grid_cell_bg: '#F8FFF0',
+                    toggle_bg_inactive: '#E0E0E0',
                 },
                 symbolColors: { '🌸':'text-pink-400', '🌺':'text-red-500', '🌷':'text-orange-500', '🪷':'text-pink-500', '🪻':'text-purple-500', '🌻':'text-yellow-500' }
             },
@@ -516,10 +638,14 @@
                     text: '#E1BEE7',
                     text_secondary: '#CE93D8',
                     accent: '#76FF03',
+                    accent_gradient: 'linear-gradient(135deg, #52C200 0%, #76FF03 100%)',
+                    accent_gradient_shaded: 'linear-gradient(135deg, #64DD17 0%, #AEEA79 100%)',
                     highlighted_bg: 'rgba(118, 255, 3, 0.15)',
                     highlighted_border: 'rgba(118, 255, 3, 0.3)',
+                    grid_cell_bg: '#4527A0',
+                    toggle_bg_inactive: 'rgba(255,255,255,0.2)',
                 },
-                symbolColors: { '👹':'text-red-400', '🐲':'text-green-400', '👻':'text-gray-300', '👽':'text-lime-300', '🐺':'text-gray-400', '😈':'text-purple-400' }
+                symbolColors: { '👹':'text-red-400', '🐲':'text-green-400', '👻':'text-gray-200', '👽':'text-lime-300', '🐺':'text-gray-300', '😈':'text-purple-300' }
             }
         };
 
@@ -580,10 +706,12 @@
             'one_won': { id: 'one_won', name: 'One Won', themeId: 'green_grocer', timeLimit: 100, isTwinningCell: (r, c) => c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'plus_minus': { id: 'plus_minus', name: 'Plus Minus', themeId: 'bug_life', timeLimit: 100, isTwinningCell: (r, c) => r === 3 || c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'sugar_cube': { id: 'sugar_cube', name: 'Sugar Cube', themeId: 'golden_bakery', timeLimit: 100, isTwinningCell: (r, c) => r === 0 || r === 6 || c === 0 || c === 6, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'marry_harry': { id: 'marry_harry', name: 'Marry Harry', themeId: 'school_of_magic', timeLimit: 100, isTwinningCell: (r, c) => c === 1 || c === 5 || (r === 3 && c >= 1 && c <= 5), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'wonder_wander': { id: 'wonder_wander', name: 'Wonder Wander', themeId: 'deep_ocean', timeLimit: 120, isTwinningCell: (r, c) => r === 6 || [0, 3, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'jail_mail': { id: 'jail_mail', name: 'Jail Mail', themeId: 'concrete_justice', timeLimit: 120, isTwinningCell: (r, c) => [0, 2, 4, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'box_vox': { id: 'box_vox', name: 'Box Vox', themeId: 'the_post_office', timeLimit: 120, isTwinningCell: (r, c) => [0, 3, 6].includes(r) || [0, 3, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'hash_hush': { id: 'hash_hush', name: 'Hash Hush', themeId: 'tutti_frutti', timeLimit: 120, isTwinningCell: (r, c) => [2, 4].includes(r) || [2, 4].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
+            'zedi_zodi': { id: 'zedi_zodi', name: 'Zedi Zodi', themeId: 'zedi_zodi', timeLimit: 120, isTwinningCell: (r, c) => r === 0 || r === 6 || r + c === 6, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'core': { id: 'core', name: 'Cacti Facti Edition', themeId: 'desert_oasis', timeLimit: 150, isTwinningCell: (r, c) => (r === 3 && c >= 3 && c <= 5) || (r === 5 && c >= 1 && c <= 3) || (c === 1 && r >= 1 && r <= 5) || (c === 3) || (c === 5 && r >= 0 && r <= 3), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'eight_and_watch': { id: 'eight_and_watch', name: 'Eight and Watch', themeId: 'morning_aviary', timeLimit: 150, isTwinningCell: (r, c) => (r === 0 && c >= 3) || (r === 3) || (r === 6 && c <= 3) || (c === 0 && r >= 3) || (c === 3) || (c === 6 && r <= 3), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'fake_snake': { id: 'fake_snake', name: 'Fake Snake', themeId: 'creepy_crawlies', timeLimit: 150, isTwinningCell: (r, c) => (r === 0 && c >= 4) || (r === 2 && c >= 2 && c <= 4) || (r === 4 && c <= 2) || (c === 0 && r >= 4) || (c === 2 && r >= 2 && r <= 4) || (c === 4 && r <= 2), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
@@ -688,7 +816,6 @@
                 const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
                 this.highScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
                 this.DOMElements.high_score.textContent = this.highScore;
-                this.DOMElements.rules_title.textContent = this.config.title;
 
                 ['game-over-modal', 'exchange-modal', 'rules-modal'].forEach(id => this.DOMElements[id]?.classList.remove('is-open'));
                 
@@ -781,12 +908,26 @@
                 return new Set(regularSymbols).size <= 1;
             }
             isLineDead(line) {
+                // A line is dead if no possible 3-in-a-row can be formed.
+                // Iterate through all possible 3-cell windows.
                 for (let i = 0; i <= line.length - this.MIN_SEQUENCE_LENGTH; i++) {
                     const window = line.slice(i, i + this.MIN_SEQUENCE_LENGTH);
-                    if (window.includes(this.SPECIAL_SYMBOLS.CURSED)) continue;
-                    const regularSymbols = window.filter(s => s && s !== this.SPECIAL_SYMBOLS.WILD);
-                    if (new Set(regularSymbols).size <= 1) return false;
+
+                    // If the window contains a cursed block, it can't form a sequence.
+                    if (window.includes(this.SPECIAL_SYMBOLS.CURSED)) {
+                        continue;
+                    }
+
+                    // Check the non-special, non-null symbols in the window.
+                    const actualSymbols = window.filter(s => s && s !== this.SPECIAL_SYMBOLS.WILD && s !== this.SPECIAL_SYMBOLS.CURSED);
+                    
+                    // If there are 0 or 1 unique symbols, a sequence is possible (e.g., [A, A, Wild] or [A, null, Wild]).
+                    // If there are more than 1 unique symbols (e.g., [A, B, Wild] or [A, B, C]), no sequence can be formed in this window.
+                    if (new Set(actualSymbols).size <= 1) {
+                        return false; // Found a possible sequence, so the line is NOT dead.
+                    }
                 }
+                // If we checked all windows and none can form a sequence, the line is dead.
                 return true;
             }
             calculateBonusGrids() {
@@ -816,12 +957,14 @@
                 return classes;
             }
             updateCell(cell, r, c) {
-                const symbol = this.gridData[r][c];
                 cell.className = this.getCellClasses(r, c);
+                const symbol = this.gridData[r][c];
+                
                 if (symbol) {
                     cell.textContent = symbol;
-                    if(this.SYMBOL_COLORS[symbol]) cell.className += ` ${this.SYMBOL_COLORS[symbol]}`;
-                    cell.classList.add('pop-in');
+                    if(this.SYMBOL_COLORS[symbol]) {
+                        cell.classList.add(this.SYMBOL_COLORS[symbol]);
+                    }
                 } else {
                     cell.textContent = this.stuckBlocks.has(`${r},${c}`) ? '💣' : '';
                 }
@@ -1040,7 +1183,50 @@
                 this.DOMElements.final_cross_score.textContent = this.DOMElements.cross_total_score.textContent;
                 this.DOMElements.final_bonus_score.textContent = this.DOMElements.bonus_grid_score.textContent;
                 this.DOMElements.final_penalty_score.textContent = this.DOMElements.empty_block_penalty.textContent;
-                setTimeout(() => this.DOMElements.game_over_modal.classList.add('is-open'), 500);
+                
+                setTimeout(() => {
+                    this.DOMElements.game_over_modal.classList.add('is-open');
+                    const shareBtn = document.getElementById('share-score-btn');
+                    if (shareBtn) {
+                        shareBtn.onclick = () => this.handleShareScore(finalScore);
+                    }
+                }, 500);
+            }
+
+            async handleShareScore(score) {
+                const editionName = this.config.name;
+                const shareText = `✨ I scored ${score} in Alloha! ✨\n\nThink you can beat my score in the Alloha - ${editionName} edition? 🎲\n\nPlay now: https://abhimanyulodha.github.io/alloha/`;
+
+                const shareBtn = document.getElementById('share-score-btn');
+                const shareBtnSpan = shareBtn.querySelector('span');
+                const originalBtnText = shareBtnSpan.textContent;
+
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'My Alloha Score!',
+                            text: shareText,
+                        });
+                    } catch (error) {
+                        console.error('Share failed:', error);
+                    }
+                } else {
+                    try {
+                        await navigator.clipboard.writeText(shareText);
+                        shareBtnSpan.textContent = 'Copied!';
+                        shareBtn.disabled = true;
+                        setTimeout(() => {
+                            shareBtnSpan.textContent = originalBtnText;
+                            shareBtn.disabled = false;
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                        shareBtnSpan.textContent = 'Copy Failed';
+                        setTimeout(() => {
+                            shareBtnSpan.textContent = originalBtnText;
+                        }, 2000);
+                    }
+                }
             }
 
             triggerConfetti() {
@@ -1089,6 +1275,7 @@
                     if (this.isLineDead(segmentSymbols)) return this.CROSS_DEATH_PENALTY;
                     return 0;
                 };
+
                 this.config.getCrossScoreSegments().forEach(seg => {
                     const segmentSymbols = [];
                     for (let i = seg.start; i <= seg.end; i++) {
@@ -1096,6 +1283,17 @@
                     }
                     bonusScore += getScoreForSegment(segmentSymbols);
                 });
+
+                if (this.config.id === 'zedi_zodi') {
+                    const diagonal = [];
+                    for (let i = 0; i < this.GRID_SIZE; i++) {
+                        diagonal.push(this.gridData[i][this.GRID_SIZE - 1 - i]);
+                    }
+                    // Only score the diagonal if it hasn't already been scored as part of a row/col segment.
+                    // For Zedi Zodi, r=0, r=6, and the diagonal are highlighted. The diagonal is distinct.
+                    bonusScore += getScoreForSegment(diagonal);
+                }
+
                 return bonusScore;
             }
             updateScoreDisplays(r, c, cross, b, p) { this.animateScoreUpdate(this.DOMElements.total_score, r + c + cross + b + p); this.animateScoreUpdate(this.DOMElements.rows_total_score, r); this.animateScoreUpdate(this.DOMElements.cols_total_score, c); this.animateScoreUpdate(this.DOMElements.cross_total_score, cross); this.animateScoreUpdate(this.DOMElements.bonus_grid_score, b); this.animateScoreUpdate(this.DOMElements.empty_block_penalty, p); }
@@ -1227,6 +1425,10 @@
             },
 
             switchVariant(variantId, isTimeBurst, isNewGame = false) {
+                if (this.currentGameInstance) {
+                    this.currentGameInstance.stopTimer();
+                }
+
                 const gameContainer = document.getElementById('game-container');
                 gameContainer.style.opacity = '0';
 
@@ -1251,7 +1453,7 @@
                     this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, savedState);
                     
                     const editionDisplay = document.getElementById('current-edition-display');
-                    let timeBurstText = isTimeBurst ? ' - <span class="text-red-500 font-bold">Time Burst</span>' : '';
+                    let timeBurstText = isTimeBurst ? ' - <span style="color: var(--accent);">Time Burst</span>' : '';
                     editionDisplay.innerHTML = 'Now Playing: ' + variantConfig.name + timeBurstText;
                     
                     gameContainer.style.opacity = '1';
@@ -1259,6 +1461,9 @@
             },
             
             resetCurrentVariant() {
+                if (this.currentGameInstance) {
+                    this.currentGameInstance.stopTimer();
+                }
                 this.switchVariant(this.activeVariantId, this.currentGameInstance.isTimeBurst, true);
             },
             
@@ -1275,13 +1480,12 @@
                     
                     if(isTimeBurst) {
                         toggleSwitch.classList.add('time-burst-active');
-                        timeBurstText.classList.remove('text-gray-600');
-                        timeBurstText.classList.add('text-red-500');
-                        classicText.classList.add('text-gray-600');
+                        timeBurstText.style.color = 'var(--accent)';
+                        classicText.style.color = 'var(--text-secondary)';
                     } else {
                         toggleSwitch.classList.remove('time-burst-active');
-                        classicText.classList.remove('text-gray-600');
-                        timeBurstText.classList.add('text-gray-600');
+                        classicText.style.color = 'var(--text)';
+                        timeBurstText.style.color = 'var(--text-secondary)';
                     }
 
                     const currentEditionId = this.currentGameInstance.config.id;
@@ -1300,13 +1504,11 @@
                     toggleSwitch.classList.toggle('time-burst-active');
                     this.activeMode = toggleSwitch.classList.contains('time-burst-active') ? 'timeburst' : 'classic';
                     if (this.activeMode === 'timeburst') {
-                        timeBurstText.classList.remove('text-gray-600');
-                        timeBurstText.classList.add('text-red-500');
-                        classicText.classList.add('text-gray-600');
+                        timeBurstText.style.color = 'var(--accent)';
+                        classicText.style.color = 'var(--text-secondary)';
                     } else {
-                        classicText.classList.remove('text-gray-600');
-                        timeBurstText.remove('text-red-500');
-                        timeBurstText.classList.add('text-gray-600');
+                        classicText.style.color = 'var(--text)';
+                        timeBurstText.style.color = 'var(--text-secondary)';
                     }
                 });
                 
