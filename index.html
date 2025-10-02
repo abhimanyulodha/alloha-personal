@@ -1219,7 +1219,7 @@
                     
                     const file = new File([blob], 'alloha-score.png', { type: 'image/png' });
                     const editionName = this.config.name;
-                    const shareText = `✨ I scored ${score} in Alloha! ✨\n\nThink you can beat my score in the Alloha - ${editionName} edition? 🎲\n\nPlay now: https://your-game-url-here.com`;
+                    const shareText = `✨ I scored ${score} in Alloha! ✨\n\nThink you can beat my score in the Alloha - ${editionName} edition? 🎲\n\nPlay now: https://abhimanyulodha.github.io/alloha/`;
 
                     if (navigator.share && navigator.canShare({ files: [file] })) {
                         await navigator.share({
